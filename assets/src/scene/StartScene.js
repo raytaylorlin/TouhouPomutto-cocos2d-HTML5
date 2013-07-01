@@ -10,7 +10,6 @@ __tp.getStartScene = function (R) {
     var OPTION_DURATION = [1.0, 1.0, 1.0];
 
     var StartSceneLayer = cc.Layer.extend({
-
         //点击选项事件触发时所执行的函数
         OPTION_FUNC: [
             //进入PRACTICE
@@ -56,6 +55,10 @@ __tp.getStartScene = function (R) {
             return true;
         },
 
+        /**
+         * 创建背景
+         * @private
+         */
         _createBackground: function () {
             //创建惰性层
             var lazyLayer = new cc.LazyLayer();
@@ -66,7 +69,10 @@ __tp.getStartScene = function (R) {
             lazyLayer.addChild(this._sptBackground, 0);
         },
 
-        //创建场景文字动画
+        /**
+         * 创建场景文字动画
+         * @private
+         */
         _createTextAnimation: function () {
             var i;
             for (i = 0; i < 4; i++) {
@@ -100,7 +106,11 @@ __tp.getStartScene = function (R) {
             }
         },
 
-        //创建选项动画
+        /**
+         * 创建选项动画
+         * @param sfCache
+         * @private
+         */
         _createOptionAnimation: function (sfCache) {
             var _this = this;
             var i;
@@ -123,7 +133,7 @@ __tp.getStartScene = function (R) {
                 actionSeq.push(cc.EaseSineOut.create(baseAction));
                 //index为0和1时是PRACTICE和BATTLE，需要添加旋转动画，NETWORK则不用
                 if (i == 0 || i == 1) {
-                    baseAction = cc.RotateBy.create(__tp.random.getRange(10, 12), -360);
+                    baseAction = cc.RotateBy.create(__tp.util.random.getRange(10, 12), -360);
                     actionSeq.push(cc.Repeat.create(baseAction, 10000));
                 }
                 this.sptOption[i].runAction(cc.Sequence.create(actionSeq));

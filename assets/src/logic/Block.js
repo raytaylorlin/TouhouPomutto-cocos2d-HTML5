@@ -20,19 +20,19 @@ __tp.Logic.Block = cc.Sprite.extend({
         this._super();
         this._is1P = is1P;
         if (initPosition === undefined) {
-            this._square1 = new __tp.Sprite.Square(__tp.Constant.INIT_BLOCK_POINT_1P, is1P);
-            this._square2 = new __tp.Sprite.Square(
+            this._square1 = new __tp.Sprite.Square(layer, __tp.Constant.INIT_BLOCK_POINT_1P, is1P);
+            this._square2 = new __tp.Sprite.Square(layer,
                 cc.p(__tp.Constant.INIT_BLOCK_POINT_1P.x,
                     __tp.Constant.INIT_BLOCK_POINT_1P.y + __tp.Constant.SQUARE_SIZE.y), is1P);
 //            this._square1.runAction(cc.Sequence.create(this._getStartActionSequence()));
 //            this._square2.runAction(cc.Sequence.create(this._getStartActionSequence()));
         } else {
-            this._square1 = new __tp.Sprite.Square(initPosition, is1P);
-            this._square2 = new __tp.Sprite.Square(
+            this._square1 = new __tp.Sprite.Square(layer, initPosition, is1P);
+            this._square2 = new __tp.Sprite.Square(layer,
                 cc.p(initPosition.x, initPosition.y + __tp.Constant.SQUARE_SIZE.y), is1P);
         }
-        layer.addChild(this._square1, __tp.Constant.SQUARE_DEPTH_LEVEL);
-        layer.addChild(this._square2, __tp.Constant.SQUARE_DEPTH_LEVEL);
+//        layer.addChild(this._square1, __tp.Constant.SQUARE_DEPTH_LEVEL);
+//        layer.addChild(this._square2, __tp.Constant.SQUARE_DEPTH_LEVEL);
     },
 
     _getStartActionSequence: function () {

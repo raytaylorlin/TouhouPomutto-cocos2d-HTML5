@@ -5,17 +5,25 @@ __tp.Sprite.Square = cc.Sprite.extend({
 
     _isToClear: false,
 
-    ctor: function (initPosition, is1P) {
+    /**
+     * 构造方法
+     * @param layer 绘制方块的层的引用
+     * @param drawPosition 绘制位置
+     * @param is1P 是否是1P
+     * @param squareType 方块种类（可空）
+     */
+    ctor: function (layer, drawPosition, is1P, squareType) {
         this._super();
-//        this._logicX = logicX;
-//        this._logicY = logicY;
         //随机产生方块种类
-        this._type = __tp.random.getMax(4);
+        if (squareType == undefined) {
+            this._type = __tp.util.random.getMax(4)% 4;
+        } else {
+            this._type = squareType;
+        }
 
         this.initWithSpriteFrameName(this._getSquareFrameName(is1P, this._type));
-        var leftBottomPoint = is1P ?
-            __tp.Constant.LEFT_BOTTOM_1P : __tp.Constant.LEFT_BOTTOM_2P;
-        this.setPosition(initPosition);
+        this.setPosition(drawPosition);
+        layer.addChild(this, __tp.Constant.SQUARE_DEPTH_LEVEL);
     },
 
     /**

@@ -54,11 +54,13 @@ __tp.initWindow = function () {
     }
 };
 
-__tp.random = {
-    getMax: function (max) {
-        return Math.floor(Math.random() * max);
-    },
+__tp.util = {};
+
+__tp.util.random = {
     getRange: function (min, max) {
-        return Math.floor(Math.random() * (max - min) + min);
+        return Math.floor(Math.random() * (max - min)) + min;
+    },
+    getMax: function (max) {
+        return this.getRange(0, max);
     }
 };
