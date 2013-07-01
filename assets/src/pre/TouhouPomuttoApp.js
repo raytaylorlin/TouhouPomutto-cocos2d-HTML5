@@ -64,3 +64,54 @@ __tp.util.random = {
         return this.getRange(0, max);
     }
 };
+
+__tp.util.InputTranslater = cc.Class.extend({
+    _logic: null,
+    _keyboardSetting: null,
+    //当前键盘上按下的键（该变量用于实现KeyPress）
+    _currentPressedKey: null,
+
+    ctor: function (logic) {
+        this._logic = logic;
+        this._keyboardSetting = logic.is1P() ?
+            __tp.Constant.KEYBOARD_SETTING_1P : __tp.Constant.KEYBOARD_SETTING_2P;
+    },
+
+    dispatchKeyboardEvent: function (event, key) {
+        var ks = this._keyboardSetting;
+        var cb = this._logic.getCurrentBlock();
+        switch (event) {
+            case "onKeyUp":
+                if (this._currentPressedKey === key) {
+                    switch (this._currentPressedKey) {
+
+                        case ks.DOWN:
+                            cb.setKeyPressedDown(false);
+                            break;
+                        case ks.ROTATE:
+                            this._logic.updateNextBlockQueue();
+                            break;
+                    }
+                }
+                break;
+            case "onKeyDown":
+                this._currentPressedKey = key;
+                switch(this._currentPressedKey){
+                    case ks.LEFT:
+                        cb.translate(true);
+                        break;
+                    case ks.RIGHT:
+                        cb.translate(false);
+                        break;
+                    case ks.DOWN:
+                        cb.setKeyPressedDown(true);
+                        break;
+                }
+                break;
+        }
+    },
+
+    dispatchTouchPadEvent: function () {
+
+    }
+});

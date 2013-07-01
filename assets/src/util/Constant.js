@@ -30,7 +30,21 @@ __tp.Constant = {
     //游戏区1P初始化位置（左下角）
     GAME_FIELD_INIT_POS_1P: cc.p(104, 113),
     //游戏区2P初始化位置（左下角）
-    GAME_FIELD_INIT_POS_2P: cc.p(593, 113)
+    GAME_FIELD_INIT_POS_2P: cc.p(593, 113),
+
+    /* 键盘按键键值 */
+    KEYBOARD_SETTING_1P: {
+        LEFT: cc.KEY.left,
+        RIGHT: cc.KEY.right,
+        DOWN: cc.KEY.down,
+        ROTATE: cc.KEY.z
+    },
+    KEYBOARD_SETTING_2P: {
+        LEFT: cc.KEY.left,
+        RIGHT: cc.KEY.right,
+        DOWN: cc.KEY.down,
+        ROTATE: cc.KEY.z
+    }
 
 //        return {
 //            IS_DEBUG: IS_DEBUG,

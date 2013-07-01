@@ -45,16 +45,20 @@ __tp.Logic.GameLogic = cc.Class.extend({
             //初始化游戏逻辑区域
             for (i = 0; i < __tp.Constant.MAX_LOGIC_H; i++) {
                 _this._gameField.push(new Array());
+                for (j = 0; j < __tp.Constant.MAX_LOGIC_W; j++) {
+                    //-1代表该位没有方块
+                    _this._gameField[i].push(-1);
+                }
             }
 
             //游戏区起始方块
             for (i = 0; i < __tp.Constant.DEFAULT_INIT_FIELD_H; i++) {
                 for (j = 0; j < __tp.Constant.MAX_LOGIC_W; j++) {
                     var randomType = __tp.util.random.getMax(4);
-                    console.log(randomType);
                     var newSquare = new __tp.Sprite.Square(_this._referLayer,
                         cc.pAdd(basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P, randomType);
-                    _this._gameField[i].push(randomType);
+                    //添加到逻辑矩阵
+                    _this._gameField[i][j] = randomType;
                 }
             }
             console.log(_this._gameField);
@@ -71,9 +75,21 @@ __tp.Logic.GameLogic = cc.Class.extend({
     },
 
     /**
+     * 是否是1P
+     * @returns {boolean}
+     */
+    is1P: function () {
+        return this._is1P;
+    },
+
+    getCurrentBlock:function(){
+        return this._currentBlock;
+    },
+
+    /**
      * 更新NEXT区方块组队列
      */
-    _updateNextBlockQueue: function () {
+    updateNextBlockQueue: function () {
         //取队头方块组并将其设置为当前活跃方块组，并重置位置
         this._currentBlock = this._nextBlockQueue.shift();
         this._currentBlock.resetPosition();
@@ -87,7 +103,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
             __tp.Constant.NEXT_QUEUE_INIT_POS_2P;
         var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL,
             __tp.Constant.NEXT_QUEUE_MAX_NUM - 1));
-        var newBlock = new __tp.Logic.Block(this, this._is1P, pos);
+        var newBlock = new __tp.Logic.Block(this._referLayer, this._is1P, pos);
         this._nextBlockQueue.push(newBlock);
         //触发淡入动画
         newBlock.fadeIn();

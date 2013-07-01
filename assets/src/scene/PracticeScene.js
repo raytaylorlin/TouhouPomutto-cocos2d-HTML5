@@ -36,16 +36,19 @@ __tp.getPracticeScene = function (R) {
     });
 
     var SpritesLayer = cc.Layer.extend({
+        //游戏逻辑
         _gameLogic: null,
+        //输入传递器
+        _inputTranslater: null,
+
         _sptPositionHint: null,
 
-        //当前键盘上按下的键（该变量用于实现KeyPress）
-        _currentPressedKey: null,
 
         ctor: function (is1P) {
             cc.associateWithNative(this, cc.Layer);
             this._is1P = is1P;
             this._gameLogic = new __tp.Logic.GameLogic(this, is1P);
+            this._inputTranslater = new __tp.util.InputTranslater(this._gameLogic);
         },
 
         init: function () {
@@ -77,30 +80,11 @@ __tp.getPracticeScene = function (R) {
         },
 
         onKeyUp: function (key) {
-            if (this._currentPressedKey === key) {
-                switch (this._currentPressedKey) {
-                    case cc.KEY.left:
-//                        this._gameLogic._currentBlock = null;
-                        this._currentBlock.translate(true);
-                        break;
-                    case cc.KEY.right:
-                        this._currentBlock.translate(false);
-                        break;
-                    case cc.KEY.down:
-                        this._currentBlock.setKeyPressedDown(false);
-                        break;
-                    case cc.KEY.up:
-                        this._updateNextBlockQueue();
-                        break;
-                }
-            }
+            this._inputTranslater.dispatchKeyboardEvent("onKeyUp",key);
         },
 
         onKeyDown: function (key) {
-            this._currentPressedKey = key;
-            if (this._currentPressedKey === cc.KEY.down) {
-                this._currentBlock.setKeyPressedDown(true);
-            }
+            this._inputTranslater.dispatchKeyboardEvent("onKeyDown",key);
         },
 
         onTouchesBegan: function (touches, event) {
@@ -131,9 +115,9 @@ __tp.getPracticeScene = function (R) {
             var spritesLayer = new SpritesLayer(true);
             spritesLayer.init();
             this.addChild(spritesLayer);
-            var spritesLayer2 = new SpritesLayer(false);
-            spritesLayer2.init();
-            this.addChild(spritesLayer2);
+//            var spritesLayer2 = new SpritesLayer(false);
+//            spritesLayer2.init();
+//            this.addChild(spritesLayer2);
         }
     });
 
