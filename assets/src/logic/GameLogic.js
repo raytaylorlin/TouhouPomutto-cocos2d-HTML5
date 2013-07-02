@@ -7,6 +7,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
     _currentBlock: null,
     //NEXT队列区方块组队列
     _nextBlockQueue: [],
+    //游戏区的逻辑矩阵
     _gameField: [],
 
     ctor: function (referLayer, is1P) {
@@ -28,7 +29,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
 
             for (i = 0; i < __tp.Constant.NEXT_QUEUE_MAX_NUM; i++) {
                 var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL, i));
-                var newBlock = new __tp.Logic.Block(_this._referLayer, _this._is1P, pos);
+                var newBlock = new __tp.Logic.Block(_this._referLayer, _this._gameField, _this._is1P, pos);
                 _this._nextBlockQueue.push(newBlock);
             }
         };
@@ -65,7 +66,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
         };
 
         //初始化当前（即将行动）的方块组
-        this._currentBlock = new __tp.Logic.Block(this._referLayer, this._is1P);
+        this._currentBlock = new __tp.Logic.Block(this._referLayer, this._gameField, this._is1P);
         initNextBlockQueue();
         initFieldSquares();
     },
@@ -103,7 +104,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
             __tp.Constant.NEXT_QUEUE_INIT_POS_2P;
         var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL,
             __tp.Constant.NEXT_QUEUE_MAX_NUM - 1));
-        var newBlock = new __tp.Logic.Block(this._referLayer, this._is1P, pos);
+        var newBlock = new __tp.Logic.Block(this._referLayer, this._gameField, this._is1P, pos);
         this._nextBlockQueue.push(newBlock);
         //触发淡入动画
         newBlock.fadeIn();

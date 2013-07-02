@@ -16,7 +16,7 @@ __tp.Sprite.Square = cc.Sprite.extend({
         this._super();
         //随机产生方块种类
         if (squareType == undefined) {
-            this._type = __tp.util.random.getMax(4)% 4;
+            this._type = __tp.util.random.getMax(4) % 4;
         } else {
             this._type = squareType;
         }
@@ -32,6 +32,23 @@ __tp.Sprite.Square = cc.Sprite.extend({
      */
     getType: function () {
         return this._type;
+    },
+
+    getDrawPosition: function () {
+        return this.getPosition();
+    },
+
+    /**
+     * 根据逻辑坐标来设置方块的绘制位置
+     * @param logicXY 逻辑坐标
+     * @param is1P 是否是1P
+     */
+    setDrawPositionByLogicXY: function (logicXY, is1P) {
+        var LEFT_BOTTOM = is1P ? __tp.Constant.GAME_FIELD_INIT_POS_1P :
+            __tp.Constant.GAME_FIELD_INIT_POS_2P;
+        var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
+        this.setPosition(cc.p(LEFT_BOTTOM.x + logicXY.x * SQUARE_LENGTH,
+            LEFT_BOTTOM.y + logicXY.y * SQUARE_LENGTH));
     },
 
     /**

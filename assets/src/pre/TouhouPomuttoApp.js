@@ -65,6 +65,22 @@ __tp.util.random = {
     }
 };
 
+__tp.util.logic = {
+    getLogicXY: function (drawPos, is1P) {
+        var LEFT_BOTTOM = is1P ? __tp.Constant.GAME_FIELD_INIT_POS_1P :
+            __tp.Constant.GAME_FIELD_INIT_POS_2P;
+        var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
+        var x = Math.floor((drawPos.x - LEFT_BOTTOM.x) / SQUARE_LENGTH);
+        var y = Math.floor((drawPos.y - LEFT_BOTTOM.y) / SQUARE_LENGTH);
+        if (y < 0 || y >= __tp.Constant.MAX_LOGIC_H ||
+            x < 0 || x >= __tp.Constant.MAX_LOGIC_W) {
+            return null;
+        } else {
+            return {x: x, y: y};
+        }
+    }
+};
+
 __tp.util.InputTranslater = cc.Class.extend({
     _logic: null,
     _keyboardSetting: null,
@@ -84,19 +100,19 @@ __tp.util.InputTranslater = cc.Class.extend({
             case "onKeyUp":
                 if (this._currentPressedKey === key) {
                     switch (this._currentPressedKey) {
-
                         case ks.DOWN:
                             cb.setKeyPressedDown(false);
                             break;
                         case ks.ROTATE:
-                            this._logic.updateNextBlockQueue();
+//                            this._logic.updateNextBlockQueue();
+                            cb.exchangeSquare();
                             break;
                     }
                 }
                 break;
             case "onKeyDown":
                 this._currentPressedKey = key;
-                switch(this._currentPressedKey){
+                switch (this._currentPressedKey) {
                     case ks.LEFT:
                         cb.translate(true);
                         break;
