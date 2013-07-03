@@ -37,13 +37,15 @@ __tp.Constant = {
         LEFT: cc.KEY.left,
         RIGHT: cc.KEY.right,
         DOWN: cc.KEY.down,
-        ROTATE: cc.KEY.z
+        ROTATE: cc.KEY.z,
+        PAUSE: cc.KEY.escape
     },
     KEYBOARD_SETTING_2P: {
         LEFT: cc.KEY.left,
         RIGHT: cc.KEY.right,
         DOWN: cc.KEY.down,
-        ROTATE: cc.KEY.z
+        ROTATE: cc.KEY.z,
+        PAUSE: cc.KEY.escape
     }
 
 //        return {

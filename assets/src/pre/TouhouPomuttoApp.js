@@ -92,7 +92,7 @@ __tp.util.InputTranslater = cc.Class.extend({
         this._keyboardSetting = logic.is1P() ?
             __tp.Constant.KEYBOARD_SETTING_1P : __tp.Constant.KEYBOARD_SETTING_2P;
         var key;
-        for(key in this._keyboardSetting){
+        for (key in this._keyboardSetting) {
             this._currentPressedKey[key] = false;
         }
     },
@@ -107,27 +107,31 @@ __tp.util.InputTranslater = cc.Class.extend({
                         case ks.DOWN:
                             cb.setKeyPressedDown(false);
                             break;
-                        case ks.ROTATE:
-//                            this._logic.updateNextBlockQueue();
-                            cb.exchangeSquare();
-                            break;
                     }
                 }
                 this._currentPressedKey[key] = false;
                 break;
             case "onKeyDown":
-                this._currentPressedKey[key] = true;
-                switch (key) {
-                    case ks.LEFT:
-                        cb.translate(true);
-                        break;
-                    case ks.RIGHT:
-                        cb.translate(false);
-                        break;
-                    case ks.DOWN:
-                        cb.setKeyPressedDown(true);
-                        break;
+                if (key === ks.DOWN) {
+                    cb.setKeyPressedDown(true);
                 }
+                if (!this._currentPressedKey[key]) {
+                    switch (key) {
+                        case ks.LEFT:
+                            cb.translate(true);
+                            break;
+                        case ks.RIGHT:
+                            cb.translate(false);
+                            break;
+                        case ks.ROTATE:
+                            cb.exchangeSquare();
+                            break;
+                        case ks.PAUSE:
+                            this._logic.pauseGame();
+                            break;
+                    }
+                }
+                this._currentPressedKey[key] = true;
                 break;
         }
     },

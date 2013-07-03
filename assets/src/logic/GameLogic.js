@@ -3,6 +3,8 @@ __tp.Logic.GameLogic = cc.Class.extend({
     _referLayer: null,
     //当前玩家是否是1P
     _is1P: true,
+    //游戏是否暂停
+    _isPause: false,
     //当前玩家控制的方块组
     _currentBlock: null,
     //NEXT队列区方块组队列
@@ -76,7 +78,9 @@ __tp.Logic.GameLogic = cc.Class.extend({
     },
 
     update: function () {
-        this._currentBlock.update();
+        if (!this._isPause) {
+            this._currentBlock.update();
+        }
     },
 
     /**
@@ -85,6 +89,17 @@ __tp.Logic.GameLogic = cc.Class.extend({
      */
     is1P: function () {
         return this._is1P;
+    },
+
+    isPause: function () {
+        return this._isPause;
+    },
+
+    /**
+     * 切换游戏暂停状态
+     */
+    pauseGame: function () {
+        this._isPause = !this._isPause;
     },
 
     /**
@@ -99,8 +114,9 @@ __tp.Logic.GameLogic = cc.Class.extend({
         return this._gameField;
     },
 
+
     /**
-     * 更新NEXT区方块组队列
+     * 更新NEXT区方块组队列，并更换方块组
      */
     updateNextBlockQueue: function () {
         //取队头方块组并将其设置为当前活跃方块组，并重置位置

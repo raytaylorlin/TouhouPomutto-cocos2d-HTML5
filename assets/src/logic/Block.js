@@ -71,11 +71,14 @@ __tp.Logic.Block = cc.Class.extend({
                 //冲突则停止运动
                 var logicXY1 = {x: tLogicXY.x, y: tLogicXY.y + 1};
                 var logicXY2 = {x: tLogicXY.x, y: tLogicXY.y + 2};
+                //校正两个方块的最终停放位置
                 this._square1.setDrawPositionByLogicXY(logicXY1, this._is1P);
                 this._square2.setDrawPositionByLogicXY(logicXY2, this._is1P);
                 gameField[logicXY1.y][logicXY1.x] = this._square1.getType();
                 gameField[logicXY2.y][logicXY2.x] = this._square2.getType();
+                //更新NEXT区方块组队列，并更换方块组
                 this._gameLogic.updateNextBlockQueue();
+                //标记方块组已停止活动
                 this._isStop = true;
                 return;
             }
@@ -90,22 +93,24 @@ __tp.Logic.Block = cc.Class.extend({
      * @param isLeftMove 是否向左移动
      */
     translate: function (isLeftMove) {
-        //平移动画锁变量， 用于防止在动画执行过程中响应键盘输入
-        if (!this._isTranslating) {
-            if (!this.checkHorizontalBlock(isLeftMove)) {
-                this._isTranslating = true;
-                //计算平移的距离
-                var factor = isLeftMove ? -1 : 1;
-                var d = cc.p(__tp.Constant.SQUARE_LENGTH * factor, 0);
-                //创建一个动作序列，该序列首先执行平移动画，最后解除动画锁
-                this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
-                    [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function () {
-                        this._isTranslating = false;
-                    }, this)])));
-                this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
-                    [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function () {
-                        this._isTranslating = false;
-                    }, this)])));
+        if (!this._gameLogic.isPause()) {
+            //平移动画锁变量， 用于防止在动画执行过程中响应键盘输入
+            if (!this._isTranslating && !this._isKeyPressedDown && !this._isExchanging) {
+                if (!this.checkHorizontalBlock(isLeftMove)) {
+                    this._isTranslating = true;
+                    //计算平移的距离
+                    var factor = isLeftMove ? -1 : 1;
+                    var d = cc.p(__tp.Constant.SQUARE_LENGTH * factor, 0);
+                    //创建一个动作序列，该序列首先执行平移动画，最后解除动画锁
+                    this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
+                        [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function () {
+                            this._isTranslating = false;
+                        }, this)])));
+                    this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
+                        [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function () {
+                            this._isTranslating = false;
+                        }, this)])));
+                }
             }
         }
     },
@@ -155,23 +160,25 @@ __tp.Logic.Block = cc.Class.extend({
      * 按下旋转键后交换两个方块
      */
     exchangeSquare: function () {
-        //方块交换东环锁变量， 用于防止在动画执行过程中响应键盘输入
-        if (!this._isExchanging) {
-            this._isExchanging = true;
-            //方块1执行上移动画，方块2执行下移动画，即两者交换位置
-            var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
-            this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
-                [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, SQUARE_LENGTH)), cc.CallFunc.create(function () {
-                    this._isExchanging = false;
-                }, this)])));
-            this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
-                [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, -SQUARE_LENGTH)), cc.CallFunc.create(function () {
-                    this._isExchanging = false;
-                }, this)])));
-            //交换两个方块，始终保持方块1保存的是下方的方块
-            var temp = this._square1;
-            this._square1 = this._square2;
-            this._square2 = temp;
+        if (!this._gameLogic.isPause()) {
+            //方块交换东环锁变量， 用于防止在动画执行过程中响应键盘输入
+            if (!this._isExchanging && !this._isTranslating) {
+                this._isExchanging = true;
+                //方块1执行上移动画，方块2执行下移动画，即两者交换位置
+                var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
+                this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
+                    [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, SQUARE_LENGTH)), cc.CallFunc.create(function () {
+                        this._isExchanging = false;
+                    }, this)])));
+                this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
+                    [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, -SQUARE_LENGTH)), cc.CallFunc.create(function () {
+                        this._isExchanging = false;
+                    }, this)])));
+                //交换两个方块，始终保持方块1保存的是下方的方块
+                var temp = this._square1;
+                this._square1 = this._square2;
+                this._square2 = temp;
+            }
         }
     },
 
