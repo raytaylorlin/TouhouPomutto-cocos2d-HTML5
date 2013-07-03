@@ -85,12 +85,16 @@ __tp.util.InputTranslater = cc.Class.extend({
     _logic: null,
     _keyboardSetting: null,
     //当前键盘上按下的键（该变量用于实现KeyPress）
-    _currentPressedKey: null,
+    _currentPressedKey: {},
 
     ctor: function (logic) {
         this._logic = logic;
         this._keyboardSetting = logic.is1P() ?
             __tp.Constant.KEYBOARD_SETTING_1P : __tp.Constant.KEYBOARD_SETTING_2P;
+        var key;
+        for(key in this._keyboardSetting){
+            this._currentPressedKey[key] = false;
+        }
     },
 
     dispatchKeyboardEvent: function (event, key) {
@@ -98,8 +102,8 @@ __tp.util.InputTranslater = cc.Class.extend({
         var cb = this._logic.getCurrentBlock();
         switch (event) {
             case "onKeyUp":
-                if (this._currentPressedKey === key) {
-                    switch (this._currentPressedKey) {
+                if (this._currentPressedKey[key]) {
+                    switch (key) {
                         case ks.DOWN:
                             cb.setKeyPressedDown(false);
                             break;
@@ -109,10 +113,11 @@ __tp.util.InputTranslater = cc.Class.extend({
                             break;
                     }
                 }
+                this._currentPressedKey[key] = false;
                 break;
             case "onKeyDown":
-                this._currentPressedKey = key;
-                switch (this._currentPressedKey) {
+                this._currentPressedKey[key] = true;
+                switch (key) {
                     case ks.LEFT:
                         cb.translate(true);
                         break;

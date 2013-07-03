@@ -85,6 +85,7 @@ __tp.getPracticeScene = function (R) {
 
         onKeyDown: function (key) {
             this._inputTranslater.dispatchKeyboardEvent("onKeyDown",key);
+            console.log(key);
         },
 
         onTouchesBegan: function (touches, event) {

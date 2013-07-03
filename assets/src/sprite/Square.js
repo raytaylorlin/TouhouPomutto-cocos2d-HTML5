@@ -7,12 +7,11 @@ __tp.Sprite.Square = cc.Sprite.extend({
 
     /**
      * 构造方法
-     * @param layer 绘制方块的层的引用
      * @param drawPosition 绘制位置
      * @param is1P 是否是1P
      * @param squareType 方块种类（可空）
      */
-    ctor: function (layer, drawPosition, is1P, squareType) {
+    ctor: function (drawPosition, is1P, squareType) {
         this._super();
         //随机产生方块种类
         if (squareType == undefined) {
@@ -20,10 +19,10 @@ __tp.Sprite.Square = cc.Sprite.extend({
         } else {
             this._type = squareType;
         }
-
+        //根据方块种类设置显示的切片
         this.initWithSpriteFrameName(this._getSquareFrameName(is1P, this._type));
+        //设置绘制位置
         this.setPosition(drawPosition);
-        layer.addChild(this, __tp.Constant.SQUARE_DEPTH_LEVEL);
     },
 
     /**

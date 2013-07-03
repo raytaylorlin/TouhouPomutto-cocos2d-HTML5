@@ -16,6 +16,9 @@ __tp.Logic.GameLogic = cc.Class.extend({
         this._is1P = is1P;
     },
 
+    /**
+     * 游戏逻辑初始化
+     */
     init: function () {
         var _this = this;
 
@@ -29,7 +32,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
 
             for (i = 0; i < __tp.Constant.NEXT_QUEUE_MAX_NUM; i++) {
                 var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL, i));
-                var newBlock = new __tp.Logic.Block(_this._referLayer, _this._gameField, _this._is1P, pos);
+                var newBlock = new __tp.Logic.Block(_this._referLayer, _this, _this._is1P, pos);
                 _this._nextBlockQueue.push(newBlock);
             }
         };
@@ -56,8 +59,9 @@ __tp.Logic.GameLogic = cc.Class.extend({
             for (i = 0; i < __tp.Constant.DEFAULT_INIT_FIELD_H; i++) {
                 for (j = 0; j < __tp.Constant.MAX_LOGIC_W; j++) {
                     var randomType = __tp.util.random.getMax(4);
-                    var newSquare = new __tp.Sprite.Square(_this._referLayer,
-                        cc.pAdd(basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P, randomType);
+                    var newSquare = new __tp.Sprite.Square(cc.pAdd(
+                        basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P, randomType);
+                    _this._referLayer.addChild(newSquare, __tp.Constant.SQUARE_DEPTH_LEVEL);
                     //添加到逻辑矩阵
                     _this._gameField[i][j] = randomType;
                 }
@@ -66,7 +70,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
         };
 
         //初始化当前（即将行动）的方块组
-        this._currentBlock = new __tp.Logic.Block(this._referLayer, this._gameField, this._is1P);
+        this._currentBlock = new __tp.Logic.Block(this._referLayer, this, this._is1P);
         initNextBlockQueue();
         initFieldSquares();
     },
@@ -83,8 +87,16 @@ __tp.Logic.GameLogic = cc.Class.extend({
         return this._is1P;
     },
 
-    getCurrentBlock:function(){
+    /**
+     * 获取当前活动方块组
+     * @returns {Logic.Block} 当前活动方块组
+     */
+    getCurrentBlock: function () {
         return this._currentBlock;
+    },
+
+    getGameField: function () {
+        return this._gameField;
     },
 
     /**
@@ -104,7 +116,7 @@ __tp.Logic.GameLogic = cc.Class.extend({
             __tp.Constant.NEXT_QUEUE_INIT_POS_2P;
         var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL,
             __tp.Constant.NEXT_QUEUE_MAX_NUM - 1));
-        var newBlock = new __tp.Logic.Block(this._referLayer, this._gameField, this._is1P, pos);
+        var newBlock = new __tp.Logic.Block(this._referLayer, this, this._is1P, pos);
         this._nextBlockQueue.push(newBlock);
         //触发淡入动画
         newBlock.fadeIn();

@@ -1,4 +1,4 @@
-__tp.Logic.Block = cc.Sprite.extend({
+__tp.Logic.Block = cc.Class.extend({
     TRANSLATE_DURATION: 0.15,
     UP_MOVE_DURATION: 0.4,
     EXCHANGE_DURATION: 0.2,
@@ -14,7 +14,7 @@ __tp.Logic.Block = cc.Sprite.extend({
     _isStop: false,
     _isKeyPressedDown: false,
 
-    _gameField: null,
+    _gameLogic: null,
 
     _square1: null,
     _square2: null,
@@ -22,26 +22,30 @@ __tp.Logic.Block = cc.Sprite.extend({
     /**
      * 方块组构造方法
      * @param layer 要添加精灵的层引用
-     * @param gameField 游戏区的逻辑矩阵
+     * @param gameLogic 游戏逻辑引用
      * @param is1P 是否是1P
      * @param initPosition 下方块的初始位置，若为空则默认为在游戏区上方的出现位置
      */
-    ctor: function (layer, gameField, is1P, initPosition) {
-        this._super();
+    ctor: function (layer, gameLogic, is1P, initPosition) {
         this._is1P = is1P;
-        this._gameField = gameField;
+        this._gameLogic = gameLogic;
+
+        var INIT_BLOCK_POINT = is1P ? __tp.Constant.INIT_BLOCK_POINT_1P :
+            __tp.Constant.INIT_BLOCK_POINT_2P;
+        //若没有定义绘制位置，则默认在游戏区上方的出现起始位置
         if (initPosition === undefined) {
-            this._square1 = new __tp.Sprite.Square(layer, __tp.Constant.INIT_BLOCK_POINT_1P, is1P);
-            this._square2 = new __tp.Sprite.Square(layer,
-                cc.p(__tp.Constant.INIT_BLOCK_POINT_1P.x,
-                    __tp.Constant.INIT_BLOCK_POINT_1P.y + __tp.Constant.SQUARE_SIZE.y), is1P);
+            this._square1 = new __tp.Sprite.Square(INIT_BLOCK_POINT, is1P);
+            this._square2 = new __tp.Sprite.Square(cc.p(INIT_BLOCK_POINT.x,
+                INIT_BLOCK_POINT.y + __tp.Constant.SQUARE_SIZE.y), is1P);
 //            this._square1.runAction(cc.Sequence.create(this._getStartActionSequence()));
 //            this._square2.runAction(cc.Sequence.create(this._getStartActionSequence()));
         } else {
-            this._square1 = new __tp.Sprite.Square(layer, initPosition, is1P);
-            this._square2 = new __tp.Sprite.Square(layer,
-                cc.p(initPosition.x, initPosition.y + __tp.Constant.SQUARE_SIZE.y), is1P);
+            this._square1 = new __tp.Sprite.Square(initPosition, is1P);
+            this._square2 = new __tp.Sprite.Square(cc.p(initPosition.x,
+                initPosition.y + __tp.Constant.SQUARE_SIZE.y), is1P);
         }
+        layer.addChild(this._square1);
+        layer.addChild(this._square2);
     },
 
     _getStartActionSequence: function () {
@@ -52,6 +56,9 @@ __tp.Logic.Block = cc.Sprite.extend({
         return seq;
     },
 
+    /**
+     * 方块组逻辑更新方法
+     */
     update: function () {
         if (!this._isStop) {
             //根据是否有按键盘下键决定移动速度
@@ -59,12 +66,16 @@ __tp.Logic.Block = cc.Sprite.extend({
             var pos1 = cc.pAdd(this._square1.getPosition(), cc.p(0, delta));
             //根据方块1即将下落的位置来判断是否冲突
             var tLogicXY = __tp.util.logic.getLogicXY(pos1, this._is1P);
-            if (tLogicXY != null && this._gameField[tLogicXY.y][tLogicXY.x] != -1) {
+            var gameField = this._gameLogic.getGameField();
+            if (tLogicXY != null && gameField[tLogicXY.y][tLogicXY.x] != -1) {
                 //冲突则停止运动
                 var logicXY1 = {x: tLogicXY.x, y: tLogicXY.y + 1};
                 var logicXY2 = {x: tLogicXY.x, y: tLogicXY.y + 2};
                 this._square1.setDrawPositionByLogicXY(logicXY1, this._is1P);
                 this._square2.setDrawPositionByLogicXY(logicXY2, this._is1P);
+                gameField[logicXY1.y][logicXY1.x] = this._square1.getType();
+                gameField[logicXY2.y][logicXY2.x] = this._square2.getType();
+                this._gameLogic.updateNextBlockQueue();
                 this._isStop = true;
                 return;
             }
@@ -108,7 +119,9 @@ __tp.Logic.Block = cc.Sprite.extend({
         var LEFT_BOTTOM = this._is1P ? __tp.Constant.GAME_FIELD_INIT_POS_1P :
             __tp.Constant.GAME_FIELD_INIT_POS_2P;
         var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
+        //获取绘制位置和逻辑矩阵，预判移动后是否被阻碍
         var drawPos = this._square1.getDrawPosition();
+        var gameField = this._gameLogic.getGameField();
         //左移的情况，右移情况类似
         if (isLeftMove) {
             //判断游戏区边界的情况
@@ -119,8 +132,8 @@ __tp.Logic.Block = cc.Sprite.extend({
             //所谓目标判定点，即当前方块绘制中心水平方向平移一个方块单位的距离，
             //再向下移动半个方块单位的距离
             var tLogicXY = __tp.util.logic.getLogicXY(
-                cc.pSub(drawPos, cc.p(SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
-            if (this._gameField[tLogicXY.y][tLogicXY.x] != -1) {
+                cc.pAdd(drawPos, cc.p(-SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
+            if (gameField[tLogicXY.y][tLogicXY.x] != -1) {
                 return true;
             }
         } else {
@@ -130,7 +143,7 @@ __tp.Logic.Block = cc.Sprite.extend({
             }
             var tLogicXY = __tp.util.logic.getLogicXY(
                 cc.pAdd(drawPos, cc.p(SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
-            if (this._gameField[tLogicXY.y][tLogicXY.x] != -1) {
+            if (gameField[tLogicXY.y][tLogicXY.x] != -1) {
                 return true;
             }
         }
@@ -139,7 +152,7 @@ __tp.Logic.Block = cc.Sprite.extend({
 
 
     /**
-     * 按下旋转键后
+     * 按下旋转键后交换两个方块
      */
     exchangeSquare: function () {
         //方块交换东环锁变量， 用于防止在动画执行过程中响应键盘输入
