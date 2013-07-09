@@ -1,9 +1,16 @@
 __tp.Sprite.Square = cc.Sprite.extend({
-    _logicX: 0,
-    _logicY: 0,
+    FADE_OUT_DURATION: 0.5,
+    FALL_DOWN_DURATION: 0.3,
+
+    _logicX: -1,
+    _logicY: -1,
+    _is1P: true,
     _type: 0,
 
+
+    isChecked: false,
     _isToClear: false,
+    _isFallingDown: false,
 
     /**
      * 构造方法
@@ -13,6 +20,7 @@ __tp.Sprite.Square = cc.Sprite.extend({
      */
     ctor: function (drawPosition, is1P, squareType) {
         this._super();
+        this._is1P = is1P;
         //随机产生方块种类
         if (squareType == undefined) {
             this._type = __tp.util.random.getMax(4) % 4;
@@ -37,6 +45,10 @@ __tp.Sprite.Square = cc.Sprite.extend({
         return this.getPosition();
     },
 
+    getLogicXY: function () {
+        return __tp.util.logic.getLogicXY(this.getPosition(), this._is1P);
+    },
+
     /**
      * 根据逻辑坐标来设置方块的绘制位置
      * @param logicXY 逻辑坐标
@@ -48,6 +60,25 @@ __tp.Sprite.Square = cc.Sprite.extend({
         var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
         this.setPosition(cc.p(LEFT_BOTTOM.x + logicXY.x * SQUARE_LENGTH,
             LEFT_BOTTOM.y + logicXY.y * SQUARE_LENGTH));
+    },
+
+    fadeOut: function () {
+        this.runAction(cc.FadeOut.create(this.FADE_OUT_DURATION));
+    },
+
+    fallDown: function (targetLogicY) {
+        var deltaLogicY = this.getLogicXY().y - targetLogicY;
+        if (deltaLogicY > 0) {
+            this._isFallingDown = true;
+            __tp.util.shareList.push(this);
+            var moveByAction = cc.MoveBy.create(this.FALL_DOWN_DURATION,
+                cc.pMult(cc.p(0, -__tp.Constant.SQUARE_LENGTH), deltaLogicY));
+            var callFuncAction = cc.CallFunc.create(function () {
+                __tp.util.shareList.pop();
+            }, this);
+            this.runAction(cc.Spawn.create(cc.Sequence.create(
+                [moveByAction, callFuncAction])));
+        }
     },
 
     /**

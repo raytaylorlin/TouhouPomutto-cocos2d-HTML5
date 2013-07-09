@@ -32,6 +32,8 @@ __tp.Constant = {
     //游戏区2P初始化位置（左下角）
     GAME_FIELD_INIT_POS_2P: cc.p(593, 113),
 
+    CLEAR_SQUARE_WAIT_TIME:5000,
+
     /* 键盘按键键值 */
     KEYBOARD_SETTING_1P: {
         LEFT: cc.KEY.left,

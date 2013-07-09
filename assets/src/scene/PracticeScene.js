@@ -48,6 +48,7 @@ __tp.getPracticeScene = function (R) {
             cc.associateWithNative(this, cc.Layer);
             this._is1P = is1P;
             this._gameLogic = new __tp.Logic.GameLogic(this, is1P);
+            this.addChild(this._gameLogic);
             this._inputTranslater = new __tp.util.InputTranslater(this._gameLogic);
         },
 

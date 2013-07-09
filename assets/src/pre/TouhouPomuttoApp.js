@@ -54,7 +54,11 @@ __tp.initWindow = function () {
     }
 };
 
+
+
 __tp.util = {};
+
+__tp.util.shareList = [];
 
 __tp.util.random = {
     getRange: function (min, max) {
@@ -72,7 +76,7 @@ __tp.util.logic = {
         var SQUARE_LENGTH = __tp.Constant.SQUARE_LENGTH;
         var x = Math.floor((drawPos.x - LEFT_BOTTOM.x) / SQUARE_LENGTH);
         var y = Math.floor((drawPos.y - LEFT_BOTTOM.y) / SQUARE_LENGTH);
-        if (y < 0 || y >= __tp.Constant.MAX_LOGIC_H ||
+        if (y < -1 || y >= __tp.Constant.MAX_LOGIC_H ||
             x < 0 || x >= __tp.Constant.MAX_LOGIC_W) {
             return null;
         } else {

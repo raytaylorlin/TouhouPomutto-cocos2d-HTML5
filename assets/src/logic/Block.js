@@ -62,29 +62,16 @@ __tp.Logic.Block = cc.Class.extend({
     update: function () {
         if (!this._isStop) {
             //根据是否有按键盘下键决定移动速度
-            var delta = this._isKeyPressedDown ? this.DOWN_V * 3 : this.DOWN_V;
+            var delta = this._isKeyPressedDown ? this.DOWN_V * 10 : this.DOWN_V;
             var pos1 = cc.pAdd(this._square1.getPosition(), cc.p(0, delta));
-            //根据方块1即将下落的位置来判断是否冲突
-            var tLogicXY = __tp.util.logic.getLogicXY(pos1, this._is1P);
-            var gameField = this._gameLogic.getGameField();
-            if (tLogicXY != null && gameField[tLogicXY.y][tLogicXY.x] != -1) {
-                //冲突则停止运动
-                var logicXY1 = {x: tLogicXY.x, y: tLogicXY.y + 1};
-                var logicXY2 = {x: tLogicXY.x, y: tLogicXY.y + 2};
-                //校正两个方块的最终停放位置
-                this._square1.setDrawPositionByLogicXY(logicXY1, this._is1P);
-                this._square2.setDrawPositionByLogicXY(logicXY2, this._is1P);
-                gameField[logicXY1.y][logicXY1.x] = this._square1.getType();
-                gameField[logicXY2.y][logicXY2.x] = this._square2.getType();
-                //更新NEXT区方块组队列，并更换方块组
-                this._gameLogic.updateNextBlockQueue();
+            if (this._gameLogic.checkStopSquare(this._square1, this._square2, pos1)) {
                 //标记方块组已停止活动
                 this._isStop = true;
-                return;
+            } else {
+                var pos2 = cc.pAdd(this._square2.getPosition(), cc.p(0, delta));
+                this._square1.setPosition(pos1);
+                this._square2.setPosition(pos2);
             }
-            var pos2 = cc.pAdd(this._square2.getPosition(), cc.p(0, delta));
-            this._square1.setPosition(pos1);
-            this._square2.setPosition(pos2);
         }
     },
 
@@ -138,7 +125,7 @@ __tp.Logic.Block = cc.Class.extend({
             //再向下移动半个方块单位的距离
             var tLogicXY = __tp.util.logic.getLogicXY(
                 cc.pAdd(drawPos, cc.p(-SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
-            if (gameField[tLogicXY.y][tLogicXY.x] != -1) {
+            if (gameField[tLogicXY.y][tLogicXY.x] != null) {
                 return true;
             }
         } else {
@@ -148,7 +135,7 @@ __tp.Logic.Block = cc.Class.extend({
             }
             var tLogicXY = __tp.util.logic.getLogicXY(
                 cc.pAdd(drawPos, cc.p(SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
-            if (gameField[tLogicXY.y][tLogicXY.x] != -1) {
+            if (gameField[tLogicXY.y][tLogicXY.x] != null) {
                 return true;
             }
         }
