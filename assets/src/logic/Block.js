@@ -64,6 +64,7 @@ __tp.Logic.Block = cc.Class.extend({
             //根据是否有按键盘下键决定移动速度
             var delta = this._isKeyPressedDown ? this.DOWN_V * 10 : this.DOWN_V;
             var pos1 = cc.pAdd(this._square1.getPosition(), cc.p(0, delta));
+            //进行碰撞检测
             if (this._gameLogic.checkStopSquare(this._square1, this._square2, pos1)) {
                 //标记方块组已停止活动
                 this._isStop = true;
