@@ -1,4 +1,4 @@
-__TP.Logic.GameLogic = cc.Node.extend({
+__tp.Logic.GameLogic = cc.Node.extend({
     //游戏逻辑的状态值
     STATE_BLOCK_MOVE: 0,
     STATE_WAITING_ANIMATION: 1,
@@ -48,12 +48,12 @@ __TP.Logic.GameLogic = cc.Node.extend({
          */
         var initNextBlockQueue = function () {
             var i;
-            var basePos = _this._is1P ? __TP.Constant.NEXT_QUEUE_INIT_POS_1P :
-                __TP.Constant.NEXT_QUEUE_INIT_POS_2P;
+            var basePos = _this._is1P ? __tp.Constant.NEXT_QUEUE_INIT_POS_1P :
+                __tp.Constant.NEXT_QUEUE_INIT_POS_2P;
 
-            for (i = 0; i < __TP.Constant.NEXT_QUEUE_MAX_NUM; i++) {
-                var pos = cc.pSub(basePos, cc.pMult(__TP.Constant.NEXT_QUEUE_POS_INTEVAL, i));
-                var newBlock = new __TP.Logic.Block(_this._referLayer, _this, _this._is1P, pos);
+            for (i = 0; i < __tp.Constant.NEXT_QUEUE_MAX_NUM; i++) {
+                var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL, i));
+                var newBlock = new __tp.Logic.Block(_this._referLayer, _this, _this._is1P, pos);
                 _this._nextBlockQueue.push(newBlock);
             }
         };
@@ -63,26 +63,26 @@ __TP.Logic.GameLogic = cc.Node.extend({
          */
         var initFieldSquares = function () {
             var i, j;
-            var basePos = _this._is1P ? __TP.Constant.GAME_FIELD_INIT_POS_1P :
-                __TP.Constant.GAME_FIELD_INIT_POS_2P;
-            var sqLength = __TP.Constant.SQUARE_LENGTH;
+            var basePos = _this._is1P ? __tp.Constant.GAME_FIELD_INIT_POS_1P :
+                __tp.Constant.GAME_FIELD_INIT_POS_2P;
+            var sqLength = __tp.Constant.SQUARE_LENGTH;
 
             //初始化游戏逻辑区域
-            for (i = 0; i < __TP.Constant.MAX_LOGIC_H; i++) {
+            for (i = 0; i < __tp.Constant.MAX_LOGIC_H; i++) {
                 _this._gameField.push(new Array());
-                for (j = 0; j < __TP.Constant.MAX_LOGIC_W; j++) {
+                for (j = 0; j < __tp.Constant.MAX_LOGIC_W; j++) {
                     //null代表该位没有方块
                     _this._gameField[i].push(null);
                 }
             }
 
             //游戏区起始方块
-            for (i = 0; i < __TP.Constant.DEFAULT_INIT_FIELD_H; i++) {
-                for (j = 0; j < __TP.Constant.MAX_LOGIC_W; j++) {
-                    var randomType = __TP.util.random.getMax(4);
-                    var newSquare = new __TP.Sprite.Square(cc.pAdd(
+            for (i = 0; i < __tp.Constant.DEFAULT_INIT_FIELD_H; i++) {
+                for (j = 0; j < __tp.Constant.MAX_LOGIC_W; j++) {
+                    var randomType = __tp.util.random.getMax(4);
+                    var newSquare = new __tp.Sprite.Square(cc.pAdd(
                         basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P, randomType);
-                    _this._referLayer.addChild(newSquare, __TP.Constant.SQUARE_DEPTH_LEVEL);
+                    _this._referLayer.addChild(newSquare, __tp.Constant.SQUARE_DEPTH_LEVEL);
                     //添加到逻辑矩阵
                     _this._gameField[i][j] = newSquare;
                 }
@@ -90,7 +90,7 @@ __TP.Logic.GameLogic = cc.Node.extend({
         };
 
         //初始化当前（即将行动）的方块组
-        this._currentBlock = new __TP.Logic.Block(this._referLayer, this, this._is1P);
+        this._currentBlock = new __tp.Logic.Block(this._referLayer, this, this._is1P);
         initNextBlockQueue();
         initFieldSquares();
     },
@@ -133,15 +133,15 @@ __TP.Logic.GameLogic = cc.Node.extend({
         this._currentBlock.resetPosition();
         //设置其他4个方块组的上升动画
         var i;
-        for (i = 0; i < __TP.Constant.NEXT_QUEUE_MAX_NUM - 1; i++) {
+        for (i = 0; i < __tp.Constant.NEXT_QUEUE_MAX_NUM - 1; i++) {
             this._nextBlockQueue[i].upMove();
         }
         //创建新的方块组并放在NEXT区最下面
-        var basePos = this._is1P ? __TP.Constant.NEXT_QUEUE_INIT_POS_1P :
-            __TP.Constant.NEXT_QUEUE_INIT_POS_2P;
-        var pos = cc.pSub(basePos, cc.pMult(__TP.Constant.NEXT_QUEUE_POS_INTEVAL,
-            __TP.Constant.NEXT_QUEUE_MAX_NUM - 1));
-        var newBlock = new __TP.Logic.Block(this._referLayer, this, this._is1P, pos);
+        var basePos = this._is1P ? __tp.Constant.NEXT_QUEUE_INIT_POS_1P :
+            __tp.Constant.NEXT_QUEUE_INIT_POS_2P;
+        var pos = cc.pSub(basePos, cc.pMult(__tp.Constant.NEXT_QUEUE_POS_INTEVAL,
+            __tp.Constant.NEXT_QUEUE_MAX_NUM - 1));
+        var newBlock = new __tp.Logic.Block(this._referLayer, this, this._is1P, pos);
         this._nextBlockQueue.push(newBlock);
         //触发淡入动画
         newBlock.fadeIn();
@@ -161,15 +161,15 @@ __TP.Logic.GameLogic = cc.Node.extend({
      */
     riseSquareLine: function (lineNum) {
         var i, j;
-        var basePos = this._is1P ? __TP.Constant.GAME_FIELD_INIT_POS_1P :
-            __TP.Constant.GAME_FIELD_INIT_POS_2P;
-        var sqLength = __TP.Constant.SQUARE_LENGTH;
+        var basePos = this._is1P ? __tp.Constant.GAME_FIELD_INIT_POS_1P :
+            __tp.Constant.GAME_FIELD_INIT_POS_2P;
+        var sqLength = __tp.Constant.SQUARE_LENGTH;
         for (i = 0; i < lineNum; i++) {
-            for (j = 0; j < __TP.Constant.MAX_LOGIC_W; j++) {
-                var randomType = __TP.util.random.getMax(4);
-                var newSquare = new __TP.Sprite.Square(cc.pAdd(
+            for (j = 0; j < __tp.Constant.MAX_LOGIC_W; j++) {
+                var randomType = __tp.util.random.getMax(4);
+                var newSquare = new __tp.Sprite.Square(cc.pAdd(
                     basePos, cc.p(sqLength * j, -sqLength * (i + 1))), this._is1P, randomType);
-                this._referLayer.addChild(newSquare, __TP.Constant.SQUARE_DEPTH_LEVEL);
+                this._referLayer.addChild(newSquare, __tp.Constant.SQUARE_DEPTH_LEVEL);
 
             }
         }
@@ -184,7 +184,7 @@ __TP.Logic.GameLogic = cc.Node.extend({
      */
     checkStopSquare: function (sq1, sq2, sq1TargetPos) {
         //根据方块1即将下落的位置来判断是否冲突
-        var tLogicXY = __TP.util.logic.getLogicXY(sq1TargetPos, this._is1P);
+        var tLogicXY = __tp.util.logic.getLogicXY(sq1TargetPos, this._is1P);
         //逻辑Y坐标为-1表示已触底，另一种情况是下方已有方块
         if ((tLogicXY != null) && (tLogicXY.y == -1 ||
             this._gameField[tLogicXY.y][tLogicXY.x] != null)) {
@@ -226,8 +226,8 @@ __TP.Logic.GameLogic = cc.Node.extend({
             //获取周围的4个方块（依次为左、右、上、下）
             var arroundSquareList = [];
             arroundSquareList.push(x - 1 >= 0 ? _this._gameField[y][x - 1] : null);
-            arroundSquareList.push(x + 1 < __TP.Constant.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null);
-            arroundSquareList.push(y + 1 < __TP.Constant.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null);
+            arroundSquareList.push(x + 1 < __tp.Constant.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null);
+            arroundSquareList.push(y + 1 < __tp.Constant.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null);
             arroundSquareList.push(y - 1 >= 0 ? _this._gameField[y - 1][x] : null);
 
             //将方块标记为“已检查”状态，以免重复检测
@@ -246,8 +246,8 @@ __TP.Logic.GameLogic = cc.Node.extend({
 
 //            //获取周围的4个方块
 //            var squareLeft = x - 1 >= 0 ? _this._gameField[y][x - 1] : null;
-//            var squareRight = x + 1 < __TP.Constant.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null;
-//            var squareUp = y + 1 < __TP.Constant.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null;
+//            var squareRight = x + 1 < __tp.Constant.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null;
+//            var squareUp = y + 1 < __tp.Constant.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null;
 //            var squareDown = y - 1 >= 0 ? _this._gameField[y - 1][x] : null;
 //
 //            //将方块标记为“已检查”状态，以免重复检测
@@ -315,10 +315,10 @@ __TP.Logic.GameLogic = cc.Node.extend({
 
             /* 3.查找空隙并让悬空的方块掉落 */
             //一列一列地查找空隙
-            for (i = 0; i < __TP.Constant.MAX_LOGIC_W; i++) {
+            for (i = 0; i < __tp.Constant.MAX_LOGIC_W; i++) {
                 var fallY = 0;
                 //从最底部往上查找
-                for (j = 0; j < __TP.Constant.MAX_LOGIC_H; j++) {
+                for (j = 0; j < __tp.Constant.MAX_LOGIC_H; j++) {
                     var checkSquare = this._gameField[j][i];
                     if (checkSquare != null) {
                         var logicXY = checkSquare.getLogicXY();
