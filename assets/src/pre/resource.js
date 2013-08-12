@@ -1,6 +1,7 @@
 __tp.getResource = function () {
     //路径前缀
     var imagePath = "/assets/res/img/";
+//    var imagePath = "";
 
     //加载列表
     var load_list = [];

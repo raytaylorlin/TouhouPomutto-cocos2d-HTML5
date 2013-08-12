@@ -11,7 +11,7 @@ __tp.getPracticeScene = function (R) {
         _nextBlockQueue: [],
 
         ctor: function () {
-            cc.associateWithNative(this, cc.Layer);
+//            cc.associateWithNative(this, cc.Layer);
         },
 
         init: function () {
@@ -22,7 +22,7 @@ __tp.getPracticeScene = function (R) {
 
         _createBackground: function () {
             //创建惰性层
-            var lazyLayer = new cc.LazyLayer();
+            var lazyLayer = new cc.Layer.create();
             this.addChild(lazyLayer);
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgGameScene_background);
@@ -45,10 +45,10 @@ __tp.getPracticeScene = function (R) {
 
 
         ctor: function (is1P) {
-            cc.associateWithNative(this, cc.Layer);
+//            cc.associateWithNative(this, cc.Layer);
             this._is1P = is1P;
             this._gameLogic = new __tp.Logic.GameLogic(this, is1P);
-            this.addChild(this._gameLogic);
+//            this.addChild(this._gameLogic);
             this._inputTranslater = new __tp.util.InputTranslater(this._gameLogic);
         },
 
@@ -117,9 +117,6 @@ __tp.getPracticeScene = function (R) {
             var spritesLayer = new SpritesLayer(true);
             spritesLayer.init();
             this.addChild(spritesLayer);
-//            var spritesLayer2 = new SpritesLayer(false);
-//            spritesLayer2.init();
-//            this.addChild(spritesLayer2);
         }
     });
 

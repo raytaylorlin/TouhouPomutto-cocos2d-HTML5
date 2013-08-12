@@ -5,16 +5,17 @@ var __tp = __tp = __tp || {};
     var filesRootPath = '/assets/src/';
     var d = document;
     var c = {
-        COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
-        box2d:false,
-        chipmunk:false,
-        showFPS:true,
-        frameRate:60,
-        loadExtension:false,
-        tag:'gameCanvas', //the dom element to run cocos2d on
-        engineDir:'/assets/cocos2d/',
-        //SingleEngineFile:'',
-        appFiles:[
+        COCOS2D_DEBUG: 2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
+        box2d: false,
+        chipmunk: false,
+        showFPS: true,
+        frameRate: 60,
+        loadExtension: false,
+        renderMode: 1,
+        tag: 'gameCanvas', //the dom element to run cocos2d on
+        // engineDir:'/assets/cocos2d/',
+        SingleEngineFile: '/assets/lib/Cocos2d-html5-v2.1.5.mina.js',
+        appFiles: [
             filesRootPath + 'pre/resource.js',
             filesRootPath + 'pre/TouhouPomuttoApp.js',
 
@@ -48,7 +49,7 @@ var __tp = __tp = __tp || {};
         }
         /*********Delete this section if you have packed all files into one*******/
 
-            //s.src = 'Packed_Release_File.js'; //IMPORTANT: Un-comment this line if you have packed all files into one
+            // s.src = '/assets/src/lib/Cocos2d-html5-v2.1.5.min.js'; //IMPORTANT: Un-comment this line if you have packed all files into one
 
         document.ccConfig = c;
         s.id = 'cocos2d-html5';

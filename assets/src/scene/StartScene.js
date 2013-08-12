@@ -61,7 +61,7 @@ __tp.getStartScene = function (R) {
          */
         _createBackground: function () {
             //创建惰性层
-            var lazyLayer = new cc.LazyLayer();
+            var lazyLayer = cc.Layer.create();
             this.addChild(lazyLayer);
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgStartScene_background);
