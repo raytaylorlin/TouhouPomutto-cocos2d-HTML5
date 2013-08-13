@@ -1,4 +1,12 @@
-(function () {
+/**
+ * @fileoverview 应用程序主入口模块，调用方法：seajs.use('app');
+ * @author Ray Taylor Lin <raytaylorlin@gmail.com>
+ **/
+define(function (require, exports) {
+    var res = require('util/resource'),
+        window = require('util/window');
+    var PracticeScene = require('modules/scene').PracticeScene;
+
     var TouhouPomuttoApp = cc.Application.extend({
         config : document['ccConfig'],
         ctor:function (scene) {
@@ -15,34 +23,25 @@
             var director = cc.Director.getInstance();
 
             // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
-//     director->enableRetinaDisplay(true);
+//            director->enableRetinaDisplay(true);
 
             // turn on display FPS
             director.setDisplayStats(this.config['showFPS']);
             // set FPS. the default value is 1.0/60 if you don't call this
             director.setAnimationInterval(1.0 / this.config['frameRate']);
-            //load resources
-            cc.Loader.preload(__tp.getResource().load_list, function () {
+
+            //加载图片、声音等资源文件，加载完成后执行回调函数载入场景
+            cc.Loader.preload(res.loadList, function () {
                 cc.Director.getInstance().runWithScene(new this.startScene());
             }, this);
-
-            __tp.Constant.WINDOW_SIZE = director.getWinSize();
-            __tp.Constant.WINDOW_CENTER_POINT = cc.p(director.getWinSize().width / 2,
-                director.getWinSize().height / 2);
-
-            // window.addEventListener("resize", function (event) {
-            //     __tp.adjustSizeForWindow();
-            // });
-            // director.runWithScene();
 
             return true;
         }
     });
 
-    //启动App
-    new TouhouPomuttoApp(__tp.getScene().PracticeScene);
-    __tp.initWindow();
-})();
-
-
-
+    exports.startApp = function(){
+        //启动App
+        new TouhouPomuttoApp(PracticeScene);
+        window.initWindow();
+    };
+});

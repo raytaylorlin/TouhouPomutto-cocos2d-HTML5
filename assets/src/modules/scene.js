@@ -1,21 +1,32 @@
-__tp.getPracticeScene = function (R) {
-    var PracticeSceneLayer = cc.Layer.extend({
+/**
+ * @fileoverview 游戏场景模块，包含了各个场景的定义
+ * @author Ray Taylor Lin <raytaylorlin@gmail.com>
+ **/
+define(function (require, exports, module) {
+    var R = require('util/resource').R,
+        C = require('util/constant'),
+        InputTranslater = require('util/control').InputTranslater,
+        GameLogic = require('modules/logic').GameLogic;
+
+    /**
+     * 惰性层，用于存放背景等不需要经常刷新的精灵
+     * @type {*}
+     */
+    var LazyLayer = cc.Layer.extend({
         _sptBackground: null,
         _sptGameFrame: null,
-
-        //当前玩家控制的方块组
-        _currentBlock: null,
-        //当前键盘上按下的键（该变量用于实现KeyPress）
-        _currentPressedKey: null,
-        //NEXT区方块组队列
-        _nextBlockQueue: [],
+        _windowSize: null,
+        _windowCenterPoint: null,
 
         ctor: function () {
-//            cc.associateWithNative(this, cc.Layer);
         },
 
         init: function () {
             this._super();
+            var director = cc.Director.getInstance();
+            this._windowSize = director.getWinSize();
+            this._windowCenterPoint = cc.p(this._windowSize.width / 2, this._windowSize.height / 2);
+
             this._createBackground();
             return true;
         },
@@ -26,15 +37,19 @@ __tp.getPracticeScene = function (R) {
             this.addChild(lazyLayer);
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgGameScene_background);
-            this._sptBackground.setPosition(__tp.Constant.WINDOW_CENTER_POINT);
+            this._sptBackground.setPosition(this._windowCenterPoint);
             lazyLayer.addChild(this._sptBackground, 0);
 
             this._sptGameFrame = cc.Sprite.create(R.imgGameScene_gameFrame);
-            this._sptGameFrame.setPosition(__tp.Constant.WINDOW_CENTER_POINT);
+            this._sptGameFrame.setPosition(this._windowCenterPoint);
             lazyLayer.addChild(this._sptGameFrame, 0);
         }
     });
 
+    /**
+     * 精灵层，用于存放各种精灵
+     * @type {*}
+     */
     var SpritesLayer = cc.Layer.extend({
         //游戏逻辑
         _gameLogic: null,
@@ -43,13 +58,10 @@ __tp.getPracticeScene = function (R) {
 
         _sptPositionHint: null,
 
-
         ctor: function (is1P) {
-//            cc.associateWithNative(this, cc.Layer);
             this._is1P = is1P;
-            this._gameLogic = new __tp.Logic.GameLogic(this, is1P);
-//            this.addChild(this._gameLogic);
-            this._inputTranslater = new __tp.util.InputTranslater(this._gameLogic);
+            this._gameLogic = new GameLogic(this, is1P);
+            this._inputTranslater = new InputTranslater(this._gameLogic);
         },
 
         init: function () {
@@ -57,7 +69,6 @@ __tp.getPracticeScene = function (R) {
             //获取图片切片
             var sfCache = cc.SpriteFrameCache.getInstance();
             sfCache.addSpriteFrames(R.plstGameScene_square, R.imgGameScene_square);
-
 
             this._createSprite();
             this._gameLogic.init();
@@ -81,11 +92,11 @@ __tp.getPracticeScene = function (R) {
         },
 
         onKeyUp: function (key) {
-            this._inputTranslater.dispatchKeyboardEvent("onKeyUp",key);
+            this._inputTranslater.dispatchKeyboardEvent("onKeyUp", key);
         },
 
         onKeyDown: function (key) {
-            this._inputTranslater.dispatchKeyboardEvent("onKeyDown",key);
+            this._inputTranslater.dispatchKeyboardEvent("onKeyDown", key);
             console.log(key);
         },
 
@@ -110,7 +121,7 @@ __tp.getPracticeScene = function (R) {
     var PracticeScene = cc.Scene.extend({
         onEnter: function () {
             this._super();
-            var baseLayer = new PracticeSceneLayer();
+            var baseLayer = new LazyLayer();
             baseLayer.init();
             this.addChild(baseLayer);
 
@@ -120,6 +131,7 @@ __tp.getPracticeScene = function (R) {
         }
     });
 
-    return PracticeScene;
-};
-
+    module.exports = {
+        PracticeScene: PracticeScene
+    };
+});

@@ -4,52 +4,22 @@
     <title>Touhou Pomutto</title>
     <meta charset="utf-8"/>
     <link href="/assets/game.css" rel="stylesheet" type="text/css"/>
-    <!--<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>-->
-    <script type="text/javascript" src="/assets/src/lib/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/cocos2d-preload.js"></script>
+    <script type="text/javascript" src="/assets/lib/sea.js"></script>
 
-    <!--<script type="text/javascript" src="/static/modernizr.custom.79046.js"></script>-->
-    <!--<script type="text/javascript" src="/static/snowball-fight.min.js"></script>-->
 </head>
 <body>
 <div id="mainFrame">
     <canvas id="gameCanvas" width="960" height="640"></canvas>
 </div>
-<!--<div id="tree2"><img src="/static/image/tree2.png" alt="&#26080;&#27861;&#26174;&#31034;&#35831;&#35265;&#35845;"/>-->
-<!--</div>-->
-<!--<div id="tree1"><img src="/static/image/tree1.png" alt="&#26080;&#27861;&#26174;&#31034;&#35831;&#35265;&#35845;"/>-->
-<!--</div>-->
-<!--<div id="angel"><img src="/static/image/angel.png" alt="&#26080;&#27861;&#26174;&#31034;&#35831;&#35265;&#35845;"/>-->
-<!--</div>-->
-<!--<div id="bell"><img src="/static/image/bell.png" alt="&#26080;&#27861;&#26174;&#31034;&#35831;&#35265;&#35845;"/></div>-->
-<!--<div id="submitBox" style="width: 459px; display:none">-->
-<!--<h1 id="submitBoxTitle">提交分数</h1>-->
-
-<!--<div id="nameInput"><label>昵 称</label><input type="text" id="usernameInput" name="username" value=""-->
-<!--placeholder="&#35831;&#36755;&#20837;&#26165;&#31216;"/></div>-->
-<!--<br/>-->
-
-<!--<div id="contactInput"><label>联系方式</label><input type="contact" id="contact" name="contact" value=""-->
-<!--placeholder="&#25163;&#26426;&#65292;QQ&#22343;&#21487;"/></div>-->
-<!--<div><img type="button" id="submitCancelButton" onclick="submitBoxClickCancel()" class="pageButton_left"-->
-<!--src="/static/image/btnCancel.png"/></div>-->
-<!--<div><img type="button" id="submitButton" onclick="submitBoxClickOk()" class="pageButton_right"-->
-<!--src="/static/image/btnOk.png"/></div>-->
-<!--</div>-->
-<!--<div id="rankList">-->
-<!--<table id="rankTable">-->
-<!--<tr>-->
-<!--<th>排名</th>-->
-<!--<th>昵称</th>-->
-<!--<th>得分</th>-->
-<!--</tr>-->
-<!--</table>-->
-<!--<div><img type="button" id="rankBackButton" onclick="rankListClickBack()" src="/static/image/btnBack.png" /></div>-->
-<!--</div>-->
-<!--<div id="uyan_frame"></div>-->
-<!--<script type="text/javascript" id="UYScript" src="http://v1.uyan.cc/js/iframe.js?UYUserId=1723638" async=""></script>-->
-<!--<script src="http://s19.cnzz.com/stat.php?id=4888717&web_id=4888717&show=pic1" language="JavaScript"></script>-->
+<script type="text/javascript">
+    seajs.config({
+        base: "/assets/src"
+//        preload: [
+//            "pre/cocos2d-preload",
+//            "lib/Cocos2d-html5-v2.1.5.mina"
+//        ]
+    })
+    seajs.use("pre/cocos2d-preload");
+</script>
 </body>
 </html>
-
-<!--<script src="HelloHTML5World/cocos2d-preload.js"></script>-->
