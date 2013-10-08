@@ -3,6 +3,6 @@
  * @author Ray Taylor Lin <raytaylorlin@gmail.com>
  **/
 define(function (require, exports) {
-    var shareList = [];
-    exports.shareList = shareList;
+    var fallingSquareList = [];
+    exports.fallingSquareList = fallingSquareList;
 });

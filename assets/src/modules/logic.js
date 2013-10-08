@@ -4,8 +4,6 @@ define(function (require, exports, module) {
         share = require('util/share'),
         Square = require('modules/sprites').Square;
 
-
-
     var GameLogic = cc.Node.extend({
         //游戏逻辑的状态值
         STATE_BLOCK_MOVE: 0,
@@ -33,8 +31,6 @@ define(function (require, exports, module) {
         _openList: [],
         //待清除方块集合列表，里面存放着一个个列表，每个列表的方块都是待清除状态
         _clearSquareSetList: [],
-        //动作等待锁，在逻辑值为STATE_WAITING_ANIMATION，保证延时动作只执行一遍
-        _waitingActionCalled: false,
 
         _blockUpdateCount: 0,
 
@@ -103,8 +99,10 @@ define(function (require, exports, module) {
             initFieldSquares();
         },
 
+        /**
+         * 逻辑更新，一个有限自动状态机不断切换状态
+         */
         update: function () {
-            var _this = this;
             if (!this._isPause) {
                 //根据当前状态值来选择要执行的逻辑
                 switch (this._logicState) {
@@ -115,12 +113,10 @@ define(function (require, exports, module) {
                         break;
                     //等待动画执行状态（->STATE_BLOCK_MOVE）
                     case this.STATE_WAITING_ANIMATION:
-                        if (!this._waitingActionCalled) {
-                            //延时（等待动画完成），再进行下一轮的清除方块检查
-                            this.scheduleOnce(function () {
-                                _this._checkClearSquare();
-                            }, 0.5);
-                            this._waitingActionCalled = true;
+                        //方块开始下落动画的时候，共享数据区会保存其一个引用
+                        //动画结束的时候会移除引用，当数据区为空时，说明所有方块都停止动画，可以执行下一轮监测
+                        if (share.fallingSquareList.length === 0) {
+                            this._checkClearSquare();
                         }
                         break;
                     //更新方块组状态（->STATE_BLOCK_MOVE）

@@ -33,16 +33,16 @@ define(function (require, exports, module) {
 
         _createBackground: function () {
             //创建惰性层
-            var lazyLayer = new cc.Layer.create();
-            this.addChild(lazyLayer);
+//            var lazyLayer = new cc.Layer.create();
+//            this.addChild(lazyLayer);
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgGameScene_background);
             this._sptBackground.setPosition(this._windowCenterPoint);
-            lazyLayer.addChild(this._sptBackground, 0);
+            this.addChild(this._sptBackground, 0);
 
             this._sptGameFrame = cc.Sprite.create(R.imgGameScene_gameFrame);
             this._sptGameFrame.setPosition(this._windowCenterPoint);
-            lazyLayer.addChild(this._sptGameFrame, 0);
+            this.addChild(this._sptGameFrame, 0);
         }
     });
 

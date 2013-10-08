@@ -51,19 +51,6 @@ define(function (require, exports, module) {
         },
 
         getLogicXY: function () {
-//            var drawPos = this.getPosition(),
-//                is1P = this._is1P;
-//            var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
-//                C.GAME_FIELD_INIT_POS_2P;
-//            var SQUARE_LENGTH = C.SQUARE_LENGTH;
-//            var x = Math.floor((drawPos.x - LEFT_BOTTOM.x) / SQUARE_LENGTH);
-//            var y = Math.floor((drawPos.y - LEFT_BOTTOM.y) / SQUARE_LENGTH);
-//            if (y < -1 || y >= C.MAX_LOGIC_H ||
-//                x < 0 || x >= C.MAX_LOGIC_W) {
-//                return null;
-//            } else {
-//                return {x: x, y: y};
-//            }
             return Square.getLogicXY(this.getPosition(), this._is1P);
         },
 
@@ -88,11 +75,11 @@ define(function (require, exports, module) {
             var deltaLogicY = this.getLogicXY().y - targetLogicY;
             if (deltaLogicY > 0) {
                 this._isFallingDown = true;
-                share.shareList.push(this);
+                share.fallingSquareList.push(this);
                 var moveByAction = cc.MoveBy.create(this.FALL_DOWN_DURATION,
                     cc.pMult(cc.p(0, -C.SQUARE_LENGTH), deltaLogicY));
                 var callFuncAction = cc.CallFunc.create(function () {
-                    share.shareList.pop();
+                    share.fallingSquareList.pop();
                 }, this);
                 this.runAction(cc.Spawn.create(cc.Sequence.create(
                     [moveByAction, callFuncAction])));
