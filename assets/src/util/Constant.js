@@ -1,14 +1,10 @@
-define(function (require, exports, module) {
-//    var director = cc.Director.getInstance(),
-//        windowSize = director.getWinSize(),
-//        windowCenterPoint = cc.p(windowSize.width / 2, windowSize._height / 2);
-
+define(function(require, exports, module) {
     module.exports = {
         //  IS_DEBUG: false
         IS_DEBUG: true,
 
-//        WINDOW_SIZE: windowSize,
-//        WINDOW_CENTER_POINT: windowCenterPoint,
+        //        WINDOW_SIZE: windowSize,
+        //        WINDOW_CENTER_POINT: windowCenterPoint,
 
         //默认的游戏区初始化高度
         DEFAULT_INIT_FIELD_H: 4,
@@ -24,8 +20,16 @@ define(function (require, exports, module) {
         //方块绘图深度
         SQUARE_DEPTH_LEVEL: 5,
 
+        //游戏分数数字尺寸
+        GAME_SCORE_SIZE: cc.p(26, 36),
+
+        //方块组初始化的位置
         INIT_BLOCK_POINT_1P: cc.p(236, 700),
         INIT_BLOCK_POINT_2P: cc.p(725, 720),
+
+        //游戏分数初始化的位置
+        INIT_SCORE_POINT_1P: cc.p(508, 172),
+        INIT_SCORE_POINT_2P: cc.p(542, 352),
 
         //NEXT队列区最大数量
         NEXT_QUEUE_MAX_NUM: 5,

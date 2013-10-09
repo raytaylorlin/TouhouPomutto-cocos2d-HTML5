@@ -1,4 +1,4 @@
-define(function (require, exports, module) {
+define(function(require, exports, module) {
     var C = require('util/constant'),
         random = require('util/random'),
         share = require('util/share'),
@@ -35,7 +35,7 @@ define(function (require, exports, module) {
         _blockUpdateCount: 0,
 
 
-        ctor: function (referLayer, is1P) {
+        ctor: function(referLayer, is1P) {
             //获取调用逻辑的层的引用
             this._referLayer = referLayer;
             this._is1P = is1P;
@@ -44,13 +44,13 @@ define(function (require, exports, module) {
         /**
          * 游戏逻辑初始化
          */
-        init: function () {
+        init: function() {
             var _this = this;
 
             /**
              * 初始化NEXT区方块组队列
              */
-            var initNextBlockQueue = function () {
+            var initNextBlockQueue = function() {
                 var i;
                 var basePos = _this._is1P ? C.NEXT_QUEUE_INIT_POS_1P :
                     C.NEXT_QUEUE_INIT_POS_2P;
@@ -65,7 +65,7 @@ define(function (require, exports, module) {
             /**
              * 初始化游戏区起始方块（4*7）
              */
-            var initFieldSquares = function () {
+            var initFieldSquares = function() {
                 var i, j;
                 var basePos = _this._is1P ? C.GAME_FIELD_INIT_POS_1P :
                     C.GAME_FIELD_INIT_POS_2P;
@@ -102,7 +102,7 @@ define(function (require, exports, module) {
         /**
          * 逻辑更新，一个有限自动状态机不断切换状态
          */
-        update: function () {
+        update: function() {
             if (!this._isPause) {
                 //根据当前状态值来选择要执行的逻辑
                 switch (this._logicState) {
@@ -111,7 +111,7 @@ define(function (require, exports, module) {
                         //更新当前方块组（下落及碰撞检测）
                         this._currentBlock.update();
                         break;
-                    //等待动画执行状态（->STATE_BLOCK_MOVE）
+                        //等待动画执行状态（->STATE_BLOCK_MOVE）
                     case this.STATE_WAITING_ANIMATION:
                         //方块开始下落动画的时候，共享数据区会保存其一个引用
                         //动画结束的时候会移除引用，当数据区为空时，说明所有方块都停止动画，可以执行下一轮监测
@@ -119,7 +119,7 @@ define(function (require, exports, module) {
                             this._checkClearSquare();
                         }
                         break;
-                    //更新方块组状态（->STATE_BLOCK_MOVE）
+                        //更新方块组状态（->STATE_BLOCK_MOVE）
                     case this.STATE_UPDATE_BLOCK:
                         //更新NEXT区方块组队列，并更换方块组
                         this.updateNextBlockQueue();
@@ -131,7 +131,7 @@ define(function (require, exports, module) {
         /**
          * 更新NEXT区方块组队列，并更换方块组
          */
-        updateNextBlockQueue: function () {
+        updateNextBlockQueue: function() {
             //取队头方块组并将其设置为当前活跃方块组，并重置位置
             this._currentBlock = this._nextBlockQueue.shift();
             this._currentBlock.resetPosition();
@@ -163,7 +163,7 @@ define(function (require, exports, module) {
          *
          * @param lineNum
          */
-        riseSquareLine: function (lineNum) {
+        riseSquareLine: function(lineNum) {
             var i, j;
             var basePos = this._is1P ? C.GAME_FIELD_INIT_POS_1P :
                 C.GAME_FIELD_INIT_POS_2P;
@@ -186,14 +186,20 @@ define(function (require, exports, module) {
          * @param sq1TargetPos 方块1即将要下落到的坐标
          * @returns {boolean} 是否碰撞
          */
-        checkStopSquare: function (sq1, sq2, sq1TargetPos) {
+        checkStopSquare: function(sq1, sq2, sq1TargetPos) {
             //根据方块1即将下落的位置来判断是否冲突
             var tLogicXY = Square.getLogicXY(sq1TargetPos, this._is1P);
             //逻辑Y坐标为-1表示已触底，另一种情况是下方已有方块
             if ((tLogicXY != null) && (tLogicXY.y == -1 ||
                 this._gameField[tLogicXY.y][tLogicXY.x] != null)) {
-                var logicXY1 = {x: tLogicXY.x, y: tLogicXY.y + 1};
-                var logicXY2 = {x: tLogicXY.x, y: tLogicXY.y + 2};
+                var logicXY1 = {
+                    x: tLogicXY.x,
+                    y: tLogicXY.y + 1
+                };
+                var logicXY2 = {
+                    x: tLogicXY.x,
+                    y: tLogicXY.y + 2
+                };
                 //校正两个方块的最终停放位置
                 sq1.setDrawPositionByLogicXY(logicXY1, this._is1P);
                 sq2.setDrawPositionByLogicXY(logicXY2, this._is1P);
@@ -215,17 +221,21 @@ define(function (require, exports, module) {
          * 清除满足条件（3个以上相同的连着的）方块
          * @private
          */
-        _checkClearSquare: function () {
+        _checkClearSquare: function() {
             var _this = this;
             /**
              * 深度优先搜索指定方块四周，将有相同花色的方块纳入一个列表
              * @param set 存放相同花色方块的列表
              * @param checkSquare 要检查四周的方块
              */
-            var checkArround = function (set, checkSquare) {
+            var checkArround = function(set, checkSquare) {
                 var logicXY = checkSquare.getLogicXY();
-                var x = logicXY.x, y = logicXY.y;
-                console.log({x: x, y: y});
+                var x = logicXY.x,
+                    y = logicXY.y;
+                console.log({
+                    x: x,
+                    y: y
+                });
 
                 //获取周围的4个方块（依次为左、右、上、下）
                 var arroundSquareList = [];
@@ -327,7 +337,7 @@ define(function (require, exports, module) {
          * 获取本逻辑是否是1P
          * @returns {boolean} 是否是1P
          */
-        is1P: function () {
+        is1P: function() {
             return this._is1P;
         },
 
@@ -335,14 +345,14 @@ define(function (require, exports, module) {
          * 获取游戏状态是否暂停
          * @returns {boolean} 游戏是否暂停
          */
-        isPause: function () {
+        isPause: function() {
             return this._isPause;
         },
 
         /**
          * 切换游戏暂停状态
          */
-        pauseGame: function () {
+        pauseGame: function() {
             this._isPause = !this._isPause;
         },
 
@@ -350,11 +360,11 @@ define(function (require, exports, module) {
          * 获取当前活动方块组
          * @returns {Logic.Block} 当前活动方块组
          */
-        getCurrentBlock: function () {
+        getCurrentBlock: function() {
             return this._currentBlock;
         },
 
-        getGameField: function () {
+        getGameField: function() {
             return this._gameField;
         }
     });
@@ -387,7 +397,7 @@ define(function (require, exports, module) {
          * @param is1P 是否是1P
          * @param initPosition 下方块的初始位置，若为空则默认为在游戏区上方的出现位置
          */
-        ctor: function (layer, gameLogic, is1P, initPosition) {
+        ctor: function(layer, gameLogic, is1P, initPosition) {
             this._is1P = is1P;
             this._gameLogic = gameLogic;
 
@@ -398,8 +408,8 @@ define(function (require, exports, module) {
                 this._square1 = new Square(INIT_BLOCK_POINT, is1P);
                 this._square2 = new Square(cc.p(INIT_BLOCK_POINT.x,
                     INIT_BLOCK_POINT.y + C.SQUARE_SIZE.y), is1P);
-//            this._square1.runAction(cc.Sequence.create(this._getStartActionSequence()));
-//            this._square2.runAction(cc.Sequence.create(this._getStartActionSequence()));
+                //            this._square1.runAction(cc.Sequence.create(this._getStartActionSequence()));
+                //            this._square2.runAction(cc.Sequence.create(this._getStartActionSequence()));
             } else {
                 this._square1 = new Square(initPosition, is1P);
                 this._square2 = new Square(cc.p(initPosition.x,
@@ -409,7 +419,7 @@ define(function (require, exports, module) {
             layer.addChild(this._square2);
         },
 
-        _getStartActionSequence: function () {
+        _getStartActionSequence: function() {
             var seq = [];
             seq.push(cc.DelayTime.create(1.0));
             seq.push(cc.MoveBy.create(0.5, cc.p(0, -80)));
@@ -420,7 +430,7 @@ define(function (require, exports, module) {
         /**
          * 方块组逻辑更新方法
          */
-        update: function () {
+        update: function() {
             if (!this._isStop) {
                 //根据是否有按键盘下键决定移动速度
                 var delta = this._isKeyPressedDown ? this.DOWN_V * 10 : this.DOWN_V;
@@ -441,7 +451,7 @@ define(function (require, exports, module) {
          * 方块组平移
          * @param isLeftMove 是否向左移动
          */
-        translate: function (isLeftMove) {
+        translate: function(isLeftMove) {
             if (!this._gameLogic.isPause()) {
                 //平移动画锁变量， 用于防止在动画执行过程中响应键盘输入
                 if (!this._isTranslating && !this._isKeyPressedDown && !this._isExchanging) {
@@ -452,11 +462,11 @@ define(function (require, exports, module) {
                         var d = cc.p(C.SQUARE_LENGTH * factor, 0);
                         //创建一个动作序列，该序列首先执行平移动画，最后解除动画锁
                         this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
-                            [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function () {
+                            [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function() {
                                 this._isTranslating = false;
                             }, this)])));
                         this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
-                            [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function () {
+                            [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function() {
                                 this._isTranslating = false;
                             }, this)])));
                     }
@@ -469,7 +479,7 @@ define(function (require, exports, module) {
          * @param isLeftMove 是否向左移动
          * @return {boolean} 方块组是否被阻碍到
          */
-        checkHorizontalBlock: function (isLeftMove) {
+        checkHorizontalBlock: function(isLeftMove) {
             var LEFT_BOTTOM = this._is1P ? C.GAME_FIELD_INIT_POS_1P :
                 C.GAME_FIELD_INIT_POS_2P;
             var SQUARE_LENGTH = C.SQUARE_LENGTH;
@@ -508,7 +518,7 @@ define(function (require, exports, module) {
         /**
          * 按下旋转键后交换两个方块
          */
-        exchangeSquare: function () {
+        exchangeSquare: function() {
             if (!this._gameLogic.isPause()) {
                 //方块交换东环锁变量， 用于防止在动画执行过程中响应键盘输入
                 if (!this._isExchanging && !this._isTranslating) {
@@ -516,11 +526,11 @@ define(function (require, exports, module) {
                     //方块1执行上移动画，方块2执行下移动画，即两者交换位置
                     var SQUARE_LENGTH = C.SQUARE_LENGTH;
                     this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
-                        [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, SQUARE_LENGTH)), cc.CallFunc.create(function () {
+                        [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, SQUARE_LENGTH)), cc.CallFunc.create(function() {
                             this._isExchanging = false;
                         }, this)])));
                     this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
-                        [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, -SQUARE_LENGTH)), cc.CallFunc.create(function () {
+                        [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, -SQUARE_LENGTH)), cc.CallFunc.create(function() {
                             this._isExchanging = false;
                         }, this)])));
                     //交换两个方块，始终保持方块1保存的是下方的方块
@@ -534,7 +544,7 @@ define(function (require, exports, module) {
         /**
          * （处于NEXT区的）方块组上升
          */
-        upMove: function () {
+        upMove: function() {
             this._square1.runAction(cc.MoveBy.create(this.UP_MOVE_DURATION,
                 C.NEXT_QUEUE_POS_INTEVAL));
             this._square2.runAction(cc.MoveBy.create(this.UP_MOVE_DURATION,
@@ -544,7 +554,7 @@ define(function (require, exports, module) {
         /**
          * 将方块组的位置重置到默认位置
          */
-        resetPosition: function () {
+        resetPosition: function() {
             var basePoint = this._is1P ? C.INIT_BLOCK_POINT_1P :
                 C.INIT_BLOCK_POINT_2P;
             var pos1 = basePoint;
@@ -560,7 +570,7 @@ define(function (require, exports, module) {
         /**
          * 方块组淡入
          */
-        fadeIn: function () {
+        fadeIn: function() {
             this._square1.runAction(cc.FadeIn.create(this.FADE_IN_DURATION));
             this._square2.runAction(cc.FadeIn.create(this.FADE_IN_DURATION));
         },
@@ -569,13 +579,38 @@ define(function (require, exports, module) {
          * 设置“向下”键是否被按下
          * @param flag 设置的值
          */
-        setKeyPressedDown: function (flag) {
+        setKeyPressedDown: function(flag) {
             this._isKeyPressedDown = flag;
+        }
+    });
+
+    var GameScore = cc.Class.extend({
+        MAX_NUM_BIT: 6,
+        _numList: [],
+
+        /**
+         * 方块组构造方法
+         * @param layer 要添加精灵的层引用
+         * @param gameLogic 游戏逻辑引用
+         * @param is1P 是否是1P
+         */
+        ctor: function(layer, gameLogic, is1P) {
+            var i;
+
+            this._is1P = is1P;
+            this._gameLogic = gameLogic;
+
+            for (i = 0; i < MAX_NUM_BIT; i++) {
+                var scoreNumber = new ScoreNumber(is1P, i);
+                this._numList.push(scoreNumber);
+                layer.addChild(scoreNumber);
+            }
         }
     });
 
     module.exports = {
         GameLogic: GameLogic,
-        Block: Block
+        Block: Block,
+        GameScore: GameScore
     }
 });

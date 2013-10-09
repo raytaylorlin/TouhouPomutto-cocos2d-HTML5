@@ -1,4 +1,4 @@
-define(function (require, exports, module) {
+define(function(require, exports, module) {
     var C = require('util/constant'),
         random = require('util/random'),
         share = require('util/share');
@@ -23,7 +23,7 @@ define(function (require, exports, module) {
          * @param is1P 是否是1P
          * @param squareType 方块种类（可空）
          */
-        ctor: function (drawPosition, is1P, squareType) {
+        ctor: function(drawPosition, is1P, squareType) {
             this._super();
             this._is1P = is1P;
             //随机产生方块种类
@@ -42,15 +42,15 @@ define(function (require, exports, module) {
          * 获取方块的种类
          * @returns {int} 方块的种类
          */
-        getType: function () {
+        getType: function() {
             return this._type;
         },
 
-        getDrawPosition: function () {
+        getDrawPosition: function() {
             return this.getPosition();
         },
 
-        getLogicXY: function () {
+        getLogicXY: function() {
             return Square.getLogicXY(this.getPosition(), this._is1P);
         },
 
@@ -59,7 +59,7 @@ define(function (require, exports, module) {
          * @param logicXY 逻辑坐标
          * @param is1P 是否是1P
          */
-        setDrawPositionByLogicXY: function (logicXY, is1P) {
+        setDrawPositionByLogicXY: function(logicXY, is1P) {
             var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
                 C.GAME_FIELD_INIT_POS_2P;
             var SQUARE_LENGTH = C.SQUARE_LENGTH;
@@ -67,18 +67,18 @@ define(function (require, exports, module) {
                 LEFT_BOTTOM.y + logicXY.y * SQUARE_LENGTH));
         },
 
-        fadeOut: function () {
+        fadeOut: function() {
             this.runAction(cc.FadeOut.create(this.FADE_OUT_DURATION));
         },
 
-        fallDown: function (targetLogicY) {
+        fallDown: function(targetLogicY) {
             var deltaLogicY = this.getLogicXY().y - targetLogicY;
             if (deltaLogicY > 0) {
                 this._isFallingDown = true;
                 share.fallingSquareList.push(this);
                 var moveByAction = cc.MoveBy.create(this.FALL_DOWN_DURATION,
                     cc.pMult(cc.p(0, -C.SQUARE_LENGTH), deltaLogicY));
-                var callFuncAction = cc.CallFunc.create(function () {
+                var callFuncAction = cc.CallFunc.create(function() {
                     share.fallingSquareList.pop();
                 }, this);
                 this.runAction(cc.Spawn.create(cc.Sequence.create(
@@ -92,13 +92,13 @@ define(function (require, exports, module) {
          * @param type 方块的种类
          * @return {string} 方块切片名称
          */
-        _getSquareFrameName: function (is1P, type) {
+        _getSquareFrameName: function(is1P, type) {
             var player = is1P ? "1" : "2";
             return "square" + player + "-" + type + ".png";
         }
     });
 
-    Square.getLogicXY = function (drawPos, is1P) {
+    Square.getLogicXY = function(drawPos, is1P) {
         var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
             C.GAME_FIELD_INIT_POS_2P;
         var SQUARE_LENGTH = C.SQUARE_LENGTH;
@@ -108,10 +108,41 @@ define(function (require, exports, module) {
             x < 0 || x >= C.MAX_LOGIC_W) {
             return null;
         } else {
-            return {x: x, y: y};
+            return {
+                x: x,
+                y: y
+            };
         }
-//            return _getLogicXY(this.getPosition(), this._is1P);
+        //            return _getLogicXY(this.getPosition(), this._is1P);
     };
+
+    var ScoreNumber = cc.Sprite.extend({
+        _bit: 0,
+        _number: 0,
+        FADE_OUT_DURATION: 0.5,
+        FALL_DOWN_DURATION: 0.3,
+
+        /**
+         * 构造方法
+         * @param drawPosition 绘制位置
+         * @param is1P 是否是1P
+         * @param squareType 方块种类（可空）
+         */
+        ctor: function(is1P, bit) {
+            this._super();
+            this._bit = bit;
+            this._number = 0;
+
+            var basePosition = is1P ? C.INIT_SCORE_POINT_1P :
+                C.INIT_SCORE_POINT_2P,
+            drawPosition = basePosition + -C.GAME_SCORE_SIZE.x * this._bit;
+
+            //设置绘制位置
+            this.setPosition(drawPosition);
+            //显示对应切片
+            this.initWithSpriteFrameName(this._number + '.png');
+        }
+    });
 
     module.exports = {
         Square: Square

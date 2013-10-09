@@ -24,7 +24,7 @@ define(function (require, exports) {
             imgGameScene_scoreNum: imagePath + "gameScene_scoreNum.png",
 
             //游戏界面的公共图片切片映射表
-            plstGameScene_square: imagePath + "gameScene_square.plist"
+            plstGameScene_square: imagePath + "gameScene_square.plist",
             plstGameScene_scoreNum: imagePath + "gameScene_scoreNum.plist"
         };
 
