@@ -21,9 +21,11 @@ define(function (require, exports) {
             imgGameScene_gameFrame: imagePath + "gameScene_gameFrame.png",
             imgGameScene_positionHint: imagePath + "gameScene_positionHint.png",
             imgGameScene_square: imagePath + "gameScene_square.png",
+            imgGameScene_scoreNum: imagePath + "gameScene_scoreNum.png",
 
             //游戏界面的公共图片切片映射表
             plstGameScene_square: imagePath + "gameScene_square.plist"
+            plstGameScene_scoreNum: imagePath + "gameScene_scoreNum.plist"
         };
 
     //遍历路径字典，初始化加载列表
