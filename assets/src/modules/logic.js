@@ -19,6 +19,8 @@ define(function(require, exports, module) {
         _is1P: true,
         //游戏是否暂停
         _isPause: false,
+        //游戏分数
+        _gameScore: null,
 
         //当前玩家控制的方块组
         _currentBlock: null,
@@ -98,6 +100,10 @@ define(function(require, exports, module) {
             this._currentBlock = new Block(this._referLayer, this, this._is1P);
             initNextBlockQueue();
             initFieldSquares();
+
+            //初始化游戏分数
+            this._gameScore = new GameScore(this._referLayer, this._is1P);
+            this._gameScore.init();
         },
 
         /**
@@ -595,10 +601,9 @@ define(function(require, exports, module) {
          * @param gameLogic 游戏逻辑引用
          * @param is1P 是否是1P
          */
-        ctor: function(referLayer, gameLogic, is1P) {
+        ctor: function(referLayer, is1P) {
             var i;
             this._referLayer = referLayer;
-            this._gameLogic = gameLogic;
             this._is1P = is1P;
         },
 

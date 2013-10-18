@@ -64,7 +64,6 @@ define(function (require, exports, module) {
         ctor: function (is1P) {
             this._is1P = is1P;
             this._gameLogic = new GameLogic(this, is1P);
-            this._gameScore = new GameScore(this, null, is1P);
             this._inputTranslater = new InputTranslater(this._gameLogic);
         },
 
@@ -77,7 +76,6 @@ define(function (require, exports, module) {
 
             this._createSprite();
             this._gameLogic.init();
-            this._gameScore.init();
 
             this.setKeyboardEnabled(true);
             this.setTouchEnabled(true);
