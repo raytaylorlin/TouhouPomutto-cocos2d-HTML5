@@ -6,7 +6,8 @@ define(function (require, exports, module) {
     var R = require('util/resource').R,
         C = require('util/constant'),
         InputTranslater = require('util/control').InputTranslater,
-        GameLogic = require('modules/logic').GameLogic;
+        GameLogic = require('modules/logic').GameLogic,
+        GameScore = require('modules/logic').GameScore;
 
     /**
      * 惰性层，用于存放背景等不需要经常刷新的精灵
@@ -53,6 +54,8 @@ define(function (require, exports, module) {
     var SpritesLayer = cc.Layer.extend({
         //游戏逻辑
         _gameLogic: null,
+        //游戏分数
+        _gameScore: null,
         //输入传递器
         _inputTranslater: null,
 
@@ -61,6 +64,7 @@ define(function (require, exports, module) {
         ctor: function (is1P) {
             this._is1P = is1P;
             this._gameLogic = new GameLogic(this, is1P);
+            this._gameScore = new GameScore(this, null, is1P);
             this._inputTranslater = new InputTranslater(this._gameLogic);
         },
 
@@ -69,9 +73,11 @@ define(function (require, exports, module) {
             //获取图片切片
             var sfCache = cc.SpriteFrameCache.getInstance();
             sfCache.addSpriteFrames(R.plstGameScene_square, R.imgGameScene_square);
+            sfCache.addSpriteFrames(R.plstGameScene_scoreNum, R.imgGameScene_scoreNum);
 
             this._createSprite();
             this._gameLogic.init();
+            this._gameScore.init();
 
             this.setKeyboardEnabled(true);
             this.setTouchEnabled(true);

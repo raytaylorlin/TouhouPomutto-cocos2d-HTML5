@@ -21,14 +21,15 @@ define(function(require, exports, module) {
         SQUARE_DEPTH_LEVEL: 5,
 
         //游戏分数数字尺寸
-        GAME_SCORE_SIZE: cc.p(26, 36),
+        GAME_SCORE_SIZE: cc.p(22, 36),
+        GAME_SCORE_DEPTH_LEVEL: 6,
 
         //方块组初始化的位置
         INIT_BLOCK_POINT_1P: cc.p(236, 700),
         INIT_BLOCK_POINT_2P: cc.p(725, 720),
 
         //游戏分数初始化的位置
-        INIT_SCORE_POINT_1P: cc.p(508, 172),
+        INIT_SCORE_POINT_1P: cc.p(522, 474),
         INIT_SCORE_POINT_2P: cc.p(542, 352),
 
         //NEXT队列区最大数量

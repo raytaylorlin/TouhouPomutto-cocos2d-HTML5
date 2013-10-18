@@ -42,6 +42,7 @@ __tp.getStartScene = function (R) {
             sfCache.addSpriteFrames(R.plstStartScene_text, R.imgStartScene_text);
             sfCache.addSpriteFrames(R.plstStartScene_options, R.imgStartScene_options);
             sfCache.addSpriteFrames(R.plstStartScene_starEffect, R.imgStartScene_starEffect);
+            sfCache.addSpriteFrames(R.plstGameScene_scoreNum, R.imgGameScene_scoreNum);
 
             this._createBackground();
 

@@ -2,7 +2,8 @@ define(function(require, exports, module) {
     var C = require('util/constant'),
         random = require('util/random'),
         share = require('util/share'),
-        Square = require('modules/sprites').Square;
+        Square = require('modules/sprites').Square,
+        ScoreNumber = require('modules/sprites').ScoreNumber;
 
     var GameLogic = cc.Node.extend({
         //游戏逻辑的状态值
@@ -590,22 +591,25 @@ define(function(require, exports, module) {
 
         /**
          * 方块组构造方法
-         * @param layer 要添加精灵的层引用
+         * @param referLayer 要添加精灵的层引用
          * @param gameLogic 游戏逻辑引用
          * @param is1P 是否是1P
          */
-        ctor: function(layer, gameLogic, is1P) {
+        ctor: function(referLayer, gameLogic, is1P) {
             var i;
-
-            this._is1P = is1P;
+            this._referLayer = referLayer;
             this._gameLogic = gameLogic;
+            this._is1P = is1P;
+        },
 
-            for (i = 0; i < MAX_NUM_BIT; i++) {
-                var scoreNumber = new ScoreNumber(is1P, i);
+        init: function() {
+            for (i = 0; i < this.MAX_NUM_BIT; i++) {
+                var scoreNumber = new ScoreNumber(this._is1P, i);
                 this._numList.push(scoreNumber);
-                layer.addChild(scoreNumber);
+                this._referLayer.addChild(scoreNumber);
             }
         }
+
     });
 
     module.exports = {

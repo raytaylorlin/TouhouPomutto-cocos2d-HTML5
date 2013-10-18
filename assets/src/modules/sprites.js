@@ -124,7 +124,6 @@ define(function(require, exports, module) {
 
         /**
          * 构造方法
-         * @param drawPosition 绘制位置
          * @param is1P 是否是1P
          * @param squareType 方块种类（可空）
          */
@@ -135,7 +134,8 @@ define(function(require, exports, module) {
 
             var basePosition = is1P ? C.INIT_SCORE_POINT_1P :
                 C.INIT_SCORE_POINT_2P,
-            drawPosition = basePosition + -C.GAME_SCORE_SIZE.x * this._bit;
+                drawPosition = cc.pAdd(basePosition, 
+                    cc.p(-C.GAME_SCORE_SIZE.x * this._bit, 0));
 
             //设置绘制位置
             this.setPosition(drawPosition);
@@ -145,6 +145,7 @@ define(function(require, exports, module) {
     });
 
     module.exports = {
-        Square: Square
+        Square: Square,
+        ScoreNumber: ScoreNumber
     };
 });
