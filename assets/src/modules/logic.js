@@ -132,6 +132,7 @@ define(function(require, exports, module) {
                         this.updateNextBlockQueue();
                         break;
                 }
+                this._gameScore.update();
             }
         },
 
@@ -294,15 +295,21 @@ define(function(require, exports, module) {
 
             /* 2.清除所有需要清除的方块 */
             if (this._clearSquareSetList.length > 0) {
-                var i, j;
+                var i, j, count;
                 //遍历每个待清除方块集合，并对所有方块清除
                 for (i in this._clearSquareSetList) {
                     var group = this._clearSquareSetList[i];
+                    count = 0;
+
                     for (j in group) {
                         var logicXY = group[j].getLogicXY();
                         this._gameField[logicXY.y][logicXY.x].fadeOut();
                         this._gameField[logicXY.y][logicXY.x] = null;
+
+                        //对消除的方块数计数
+                        count++;
                     }
+                    this._gameScore.addScore(100 * count);
                 }
 
                 /* 3.查找空隙并让悬空的方块掉落 */
@@ -594,6 +601,8 @@ define(function(require, exports, module) {
     var GameScore = cc.Class.extend({
         MAX_NUM_BIT: 6,
         _numList: [],
+        _displayScore: 0,
+        _realScore: 0,
 
         /**
          * 方块组构造方法
@@ -608,10 +617,37 @@ define(function(require, exports, module) {
         },
 
         init: function() {
+            //_numList[0]为分数的个位数
             for (i = 0; i < this.MAX_NUM_BIT; i++) {
                 var scoreNumber = new ScoreNumber(this._is1P, i);
                 this._numList.push(scoreNumber);
                 this._referLayer.addChild(scoreNumber);
+            }
+        },
+
+        update: function() {
+            if (this._displayScore < this._realScore) {
+                this._displayScore += 100;
+                this._display();
+            }
+        },
+
+        addScore: function(score) {
+            this._realScore += score;
+        },
+
+        getScore: function() {
+            return this._score;
+        },
+
+        _display: function() {
+            var i,
+                scoreStr = this._displayScore + '';
+            while (scoreStr.length < this.MAX_NUM_BIT) {
+                scoreStr = '0' + scoreStr;
+            }
+            for (i = 0; i < this.MAX_NUM_BIT; i++) {
+                this._numList[this.MAX_NUM_BIT - i - 1].setNumber(scoreStr.slice(i, i + 1));
             }
         }
 

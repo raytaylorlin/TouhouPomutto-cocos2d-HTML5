@@ -125,7 +125,7 @@ define(function(require, exports, module) {
         /**
          * 构造方法
          * @param is1P 是否是1P
-         * @param squareType 方块种类（可空）
+         * @param bit 数字处于第几位（0是个位）
          */
         ctor: function(is1P, bit) {
             this._super();
@@ -141,6 +141,16 @@ define(function(require, exports, module) {
             this.setPosition(drawPosition);
             //显示对应切片
             this.initWithSpriteFrameName(this._number + '.png');
+        },
+
+        /**
+         * 根据数字设置切片，以显示对应的数字
+         * @param {Integer} number 要设置的数字
+         */
+        setNumber: function(number) {
+            this._number = number;
+            var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(this._number + '.png');
+            this.setDisplayFrame(frame);
         }
     });
 

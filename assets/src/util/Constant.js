@@ -32,6 +32,9 @@ define(function(require, exports, module) {
         INIT_SCORE_POINT_1P: cc.p(522, 474),
         INIT_SCORE_POINT_2P: cc.p(542, 352),
 
+        //分数显示递增的幅度
+        SCORE_INCREASE_STEP: 100,
+
         //NEXT队列区最大数量
         NEXT_QUEUE_MAX_NUM: 5,
         //NEXT队列区1P起始位置（最顶端）
