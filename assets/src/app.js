@@ -4,7 +4,7 @@
  **/
 define(function (require, exports) {
     var res = require('util/resource'),
-        window = require('util/window');
+        monitor = require('util/monitor');
     var PracticeScene = require('modules/scene').PracticeScene;
 
     var TouhouPomuttoApp = cc.Application.extend({
@@ -42,6 +42,6 @@ define(function (require, exports) {
     exports.startApp = function(){
         //启动App
         new TouhouPomuttoApp(PracticeScene);
-        window.initWindow();
+        monitor.initWindow();
     };
 });

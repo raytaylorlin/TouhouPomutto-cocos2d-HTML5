@@ -2,30 +2,36 @@
  * @fileoverview 游戏场景模块，包含了各个场景的定义
  * @author Ray Taylor Lin <raytaylorlin@gmail.com>
  **/
-define(function (require, exports, module) {
+define(function(require, exports, module) {
     var R = require('util/resource').R,
         C = require('util/constant'),
         InputTranslater = require('util/control').InputTranslater,
+        monitor = require('util/monitor'),
         GameLogic = require('modules/logic').GameLogic,
         GameScore = require('modules/logic').GameScore;
+
+    // var director = cc.Director.getInstance();
+        // windowSize = director.getWinSize(),
+        // windowCenterPoint = cc.p(windowSize.width / 2, windowSize.height / 2);
 
     var StartSceneLayer = cc.Layer.extend({
         //点击选项事件触发时所执行的函数
         OPTION_FUNC: [
             //进入PRACTICE
-            function () {
+            function() {
                 var PracticeSceneClass = __tp.getScene().PracticeScene;
                 var scene = new PracticeSceneClass();
                 cc.Director.getInstance().replaceScene(cc.TransitionFade.create(1.0, scene));
             },
             //进入BATTLE
-            function () {
+            function() {
                 console.log("BATTLE");
             },
             //进入NETWORK
-            function () {
+            function() {
                 console.log("NETWORK");
-            }],
+            }
+        ],
 
         isShowAbout: false,
         _sptBackground: null,
@@ -33,7 +39,7 @@ define(function (require, exports, module) {
         sptOption: [],
         sptAbout: null,
 
-        init: function () {
+        init: function() {
             var _this = this;
             this._super();
 
@@ -60,7 +66,7 @@ define(function (require, exports, module) {
          * 创建背景
          * @private
          */
-        _createBackground: function () {
+        _createBackground: function() {
             //创建惰性层
             var lazyLayer = cc.Layer.create();
             this.addChild(lazyLayer);
@@ -74,7 +80,7 @@ define(function (require, exports, module) {
          * 创建场景文字动画
          * @private
          */
-        _createTextAnimation: function () {
+        _createTextAnimation: function() {
             var i;
             for (i = 0; i < 4; i++) {
                 var name = "text" + i + ".png";
@@ -112,7 +118,7 @@ define(function (require, exports, module) {
          * @param sfCache
          * @private
          */
-        _createOptionAnimation: function (sfCache) {
+        _createOptionAnimation: function(sfCache) {
             var _this = this;
             var i;
             for (i = 0; i < 3; i++) {
@@ -143,14 +149,14 @@ define(function (require, exports, module) {
             }
 
             //点击PRACTICE事件
-            this.sptOption[0].onTouchesEnded = function (touches, event) {
+            this.sptOption[0].onTouchesEnded = function(touches, event) {
                 if (this._touchBegan) {
                     this._touchBegan = false;
                     _this.OPTION_FUNC[0]();
                 }
             }
             //点击BATTLE事件
-            this.sptOption[1].onTouchesEnded = function (touches, event) {
+            this.sptOption[1].onTouchesEnded = function(touches, event) {
                 if (this._touchBegan) {
                     this._touchBegan = false;
                     _this.OPTION_FUNC[1]();
@@ -158,11 +164,11 @@ define(function (require, exports, module) {
             }
         },
 
-        onTouchesBegan: function (touches, event) {
+        onTouchesBegan: function(touches, event) {
             this.isMouseDown = true;
         },
 
-        onTouchesMoved: function (touches, event) {
+        onTouchesMoved: function(touches, event) {
             if (this.isMouseDown) {
                 if (touches) {
                     //this.circle.setPosition(cc.p(touches[0].getLocation().x, touches[0].getLocation().y));
@@ -170,14 +176,14 @@ define(function (require, exports, module) {
             }
         },
 
-        onTouchesEnded: function (touches, event) {
+        onTouchesEnded: function(touches, event) {
             if (this.isShowAbout) {
                 this.sptAbout.runAction(cc.FadeOut.create(1));
                 this.isShowAbout = false;
             }
         },
 
-        onTouchesCancelled: function (touches, event) {
+        onTouchesCancelled: function(touches, event) {
             console.log("onTouchesCancelled");
         }
     });
@@ -192,23 +198,22 @@ define(function (require, exports, module) {
         _windowSize: null,
         _windowCenterPoint: null,
 
-        ctor: function () {
-        },
+        ctor: function() {},
 
-        init: function () {
+        init: function() {
             this._super();
-            var director = cc.Director.getInstance();
-            this._windowSize = director.getWinSize();
+            // var director = cc.Director.getInstance();
+            // this._windowSize = director.getWinSize();
+            this._windowSize = monitor.getWindowSize();
             this._windowCenterPoint = cc.p(this._windowSize.width / 2, this._windowSize.height / 2);
-
             this._createBackground();
             return true;
         },
 
-        _createBackground: function () {
+        _createBackground: function() {
             //创建惰性层
-//            var lazyLayer = new cc.Layer.create();
-//            this.addChild(lazyLayer);
+            //            var lazyLayer = new cc.Layer.create();
+            //            this.addChild(lazyLayer);
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgGameScene_background);
             this._sptBackground.setPosition(this._windowCenterPoint);
@@ -234,13 +239,13 @@ define(function (require, exports, module) {
 
         _sptPositionHint: null,
 
-        ctor: function (is1P) {
+        ctor: function(is1P) {
             this._is1P = is1P;
             this._gameLogic = new GameLogic(this, is1P);
             this._inputTranslater = new InputTranslater(this._gameLogic);
         },
 
-        init: function () {
+        init: function() {
             this._super();
             //获取图片切片
             var sfCache = cc.SpriteFrameCache.getInstance();
@@ -260,37 +265,37 @@ define(function (require, exports, module) {
         /**
          * 创建精灵
          */
-        _createSprite: function () {
+        _createSprite: function() {
 
         },
 
-        update: function () {
+        update: function() {
             this._gameLogic.update();
         },
 
-        onKeyUp: function (key) {
+        onKeyUp: function(key) {
             this._inputTranslater.dispatchKeyboardEvent("onKeyUp", key);
         },
 
-        onKeyDown: function (key) {
+        onKeyDown: function(key) {
             this._inputTranslater.dispatchKeyboardEvent("onKeyDown", key);
             console.log(key);
         },
 
-        onTouchesBegan: function (touches, event) {
+        onTouchesBegan: function(touches, event) {
             this.isMouseDown = true;
         },
-        onTouchesMoved: function (touches, event) {
+        onTouchesMoved: function(touches, event) {
             if (this.isMouseDown) {
                 if (touches) {
                     //this.circle.setPosition(cc.p(touches[0].getLocation().x, touches[0].getLocation().y));
                 }
             }
         },
-        onTouchesEnded: function (touches, event) {
+        onTouchesEnded: function(touches, event) {
 
         },
-        onTouchesCancelled: function (touches, event) {
+        onTouchesCancelled: function(touches, event) {
 
         }
     });

@@ -9,7 +9,7 @@ define(function(require, exports) {
         if (!ccDirector) {
             ccDirector = cc.Director.getInstance();
         }
-        return ccDirector.getWindowSize();
+        return ccDirector.getWinSize();
     };
 
     exports.getWindwoCenterPoint = function() {
