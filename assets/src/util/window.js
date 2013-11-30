@@ -2,11 +2,25 @@
  * @fileoverview 窗口操作模块
  * @author Ray Taylor Lin <raytaylorlin@gmail.com>
  **/
-define(function (require, exports) {
+define(function(require, exports) {
+    var ccDirector,
+        windowSize,
+        windowCenterPoint;
+
+    exports.getWindowSize = function() {
+        if (!ccDirector) {
+            ccDirector = cc.Director.getInstance();
+        }
+        if (!windowSize) {
+            windowSize = ccDirector.getWindowSize();
+        }
+        return windowSize;
+    };
+
     /*
      * 初始化窗口大小
      */
-    exports.initWindow = function () {
+    exports.initWindow = function() {
         var parentDiv = document.getElementById("Cocos2dGameContainer");
         if (parentDiv) {
             parentDiv.style.width = cc.canvas.width + "px";
@@ -19,7 +33,7 @@ define(function (require, exports) {
         }
     };
 
-    exports.adjustSizeForWindow = function () {
+    exports.adjustSizeForWindow = function() {
         //目标宽高比
         var originRatio = cc.originalCanvasSize.width / cc.originalCanvasSize.height;
         //窗口宽高比
