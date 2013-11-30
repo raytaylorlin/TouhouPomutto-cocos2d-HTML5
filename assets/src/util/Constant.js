@@ -5,6 +5,18 @@ define(function(require, exports, module) {
 
         //        WINDOW_SIZE: windowSize,
         //        WINDOW_CENTER_POINT: windowCenterPoint,
+        //        
+        /* 开始场景相关 */
+
+        START_SCENE_TEXT_POSITION: [cc.p(-300, 534), cc.p(330, 432), cc.p(626, 424), cc.p(380, 350)],
+        START_SCENE_TEXT_TRIGGLE: [0.5, 1.0, 1.3, 1.6],
+        START_SCENE_TEXT_DURATION: [0.8, 0.8, 0.8, 0.8],
+        START_SCENE_OPTION_POSITION: [cc.p(841, 521), cc.p(721, 308), cc.p(500, 177)],
+        START_SCENE_OPTION_NAME: ["practice", "battle", "network"],
+        START_SCENE_OPTION_TRIGGLE: [1.8, 2.1, 2.4],
+        START_SCENE_OPTION_DURATION: [1.0, 1.0, 1.0],
+        
+        /* 游戏逻辑相关 */
 
         //默认的游戏区初始化高度
         DEFAULT_INIT_FIELD_H: 4,
