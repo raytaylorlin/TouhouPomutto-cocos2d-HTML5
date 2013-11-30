@@ -3,18 +3,22 @@
  * @author Ray Taylor Lin <raytaylorlin@gmail.com>
  **/
 define(function(require, exports) {
-    var ccDirector,
-        windowSize,
-        windowCenterPoint;
+    var ccDirector;
 
     exports.getWindowSize = function() {
         if (!ccDirector) {
             ccDirector = cc.Director.getInstance();
         }
-        if (!windowSize) {
-            windowSize = ccDirector.getWindowSize();
+        return ccDirector.getWindowSize();
+    };
+
+    exports.getWindwoCenterPoint = function() {
+        var windowSize = this.getWindowSize();
+
+        if (!ccDirector) {
+            ccDirector = cc.Director.getInstance();
         }
-        return windowSize;
+        return cc.p(windowSize.width / 2, windowSize.height / 2);
     };
 
     /*
