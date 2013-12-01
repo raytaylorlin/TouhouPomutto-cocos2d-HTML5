@@ -12,7 +12,7 @@ define(function(require, exports) {
         return ccDirector.getWinSize();
     };
 
-    exports.getWindwoCenterPoint = function() {
+    exports.getWindowCenterPoint = function() {
         var windowSize = this.getWindowSize();
 
         if (!ccDirector) {

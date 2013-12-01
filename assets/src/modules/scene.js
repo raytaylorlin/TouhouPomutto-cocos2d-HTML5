@@ -3,8 +3,18 @@
  * @author Ray Taylor Lin <raytaylorlin@gmail.com>
  **/
 define(function (require, exports, module) {
-    var LazyLayer = require('modules/layer').LazyLayer,
+    var StartSceneLayer = require('modules/').StartSceneLayer,
+        LazyLayer = require('modules/layer').LazyLayer,
         SpritesLayer = require('modules/layer').SpritesLayer;
+
+    var StartScene = cc.Scene.extend({
+        onEnter: function () {
+            this._super();
+            var layer = new StartSceneLayer();
+            layer.init();
+            this.addChild(layer);
+        }
+    });
 
     var PracticeScene = cc.Scene.extend({
         onEnter: function () {
@@ -20,6 +30,7 @@ define(function (require, exports, module) {
     });
 
     module.exports = {
+        StartScene: StartScene,
         PracticeScene: PracticeScene
     };
 });

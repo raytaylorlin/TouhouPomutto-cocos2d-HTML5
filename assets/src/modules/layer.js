@@ -11,10 +11,21 @@ define(function(require, exports, module) {
         GameScore = require('modules/logic').GameScore;
 
     // var director = cc.Director.getInstance();
-        // windowSize = director.getWinSize(),
-        // windowCenterPoint = cc.p(windowSize.width / 2, windowSize.height / 2);
+    // windowSize = director.getWinSize(),
+    // windowCenterPoint = cc.p(windowSize.width / 2, windowSize.height / 2);
 
+    /**
+     * 游戏开始场景层
+     */
     var StartSceneLayer = cc.Layer.extend({
+        TEXT_POSITION: [cc.p(-300, 534), cc.p(330, 432), cc.p(626, 424), cc.p(380, 350)],
+        TEXT_TRIGGLE: [0.5, 1.0, 1.3, 1.6],
+        TEXT_DURATION: [0.8, 0.8, 0.8, 0.8],
+        OPTION_POSITION: [cc.p(841, 521), cc.p(721, 308), cc.p(500, 177)],
+        OPTION_NAME: ["practice", "battle", "network"],
+        OPTION_TRIGGLE: [1.8, 2.1, 2.4],
+        OPTION_DURATION: [1.0, 1.0, 1.0],
+
         //点击选项事件触发时所执行的函数
         OPTION_FUNC: [
             //进入PRACTICE
@@ -67,13 +78,12 @@ define(function(require, exports, module) {
          * @private
          */
         _createBackground: function() {
-            //创建惰性层
-            var lazyLayer = cc.Layer.create();
-            this.addChild(lazyLayer);
+            var windowCenterPoint = monitor.getWindowCenterPoint();
+
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgStartScene_background);
-            this._sptBackground.setPosition(__tp.Constant.WINDOW_CENTER_POINT);
-            lazyLayer.addChild(this._sptBackground, 0);
+            this._sptBackground.setPosition(windowCenterPoint);
+            this.addChild(this._sptBackground, 0);
         },
 
         /**
@@ -202,25 +212,20 @@ define(function(require, exports, module) {
 
         init: function() {
             this._super();
-            // var director = cc.Director.getInstance();
-            // this._windowSize = director.getWinSize();
-            this._windowSize = monitor.getWindowSize();
-            this._windowCenterPoint = cc.p(this._windowSize.width / 2, this._windowSize.height / 2);
             this._createBackground();
             return true;
         },
 
         _createBackground: function() {
-            //创建惰性层
-            //            var lazyLayer = new cc.Layer.create();
-            //            this.addChild(lazyLayer);
+            var windowCenterPoint = monitor.getWindowCenterPoint();
+
             //创建背景精灵
             this._sptBackground = cc.Sprite.create(R.imgGameScene_background);
-            this._sptBackground.setPosition(this._windowCenterPoint);
+            this._sptBackground.setPosition(windowCenterPoint);
             this.addChild(this._sptBackground, 0);
 
             this._sptGameFrame = cc.Sprite.create(R.imgGameScene_gameFrame);
-            this._sptGameFrame.setPosition(this._windowCenterPoint);
+            this._sptGameFrame.setPosition(windowCenterPoint);
             this.addChild(this._sptGameFrame, 0);
         }
     });
