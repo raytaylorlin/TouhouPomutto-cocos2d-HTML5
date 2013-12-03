@@ -11,7 +11,7 @@ define(function (require) {
             renderMode: 1,  //使用canvas渲染
             tag: 'gameCanvas', //the dom element to run cocos2d on
             // engineDir:'/assets/cocos2d/',
-            SingleEngineFile: '/assets/src/lib/Cocos2d-html5-v2.1.5.mina.js',
+            SingleEngineFile: '/assets/src/lib/Cocos2d-html5-v2.2.1.min.js',
             appFiles: [
                 filesRootPath + 'pre/main.js'
             ]
