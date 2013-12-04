@@ -248,10 +248,12 @@ define(function(require, exports, module) {
 
                 //获取周围的4个方块（依次为左、右、上、下）
                 var arroundSquareList = [];
-                arroundSquareList.push(x - 1 >= 0 ? _this._gameField[y][x - 1] : null);
-                arroundSquareList.push(x + 1 < C.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null);
-                arroundSquareList.push(y + 1 < C.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null);
-                arroundSquareList.push(y - 1 >= 0 ? _this._gameField[y - 1][x] : null);
+                if(y >= 0) {
+                    arroundSquareList.push(x - 1 >= 0 ? _this._gameField[y][x - 1] : null);
+                    arroundSquareList.push(x + 1 < C.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null);
+                    arroundSquareList.push(y + 1 < C.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null);
+                    arroundSquareList.push(y - 1 >= 0 ? _this._gameField[y - 1][x] : null);
+                }
 
                 //将方块标记为“已检查”状态，以免重复检测
                 checkSquare.isChecked = true;
@@ -304,8 +306,10 @@ define(function(require, exports, module) {
 
                     for (j in group) {
                         var logicXY = group[j].getLogicXY();
-                        this._gameField[logicXY.y][logicXY.x].fadeOut();
-                        this._gameField[logicXY.y][logicXY.x] = null;
+                        if(this._gameField[logicXY.y][logicXY.x]) {
+                            this._gameField[logicXY.y][logicXY.x].fadeOut();
+                            this._gameField[logicXY.y][logicXY.x] = null;
+                        }
 
                         //对消除的方块数计数
                         count++;
@@ -501,12 +505,13 @@ define(function(require, exports, module) {
          * @return {boolean} 方块组是否被阻碍到
          */
         checkHorizontalBlock: function(isLeftMove) {
-            var LEFT_BOTTOM = this._is1P ? C.GAME_FIELD_INIT_POS_1P :
-                C.GAME_FIELD_INIT_POS_2P;
-            var SQUARE_LENGTH = C.SQUARE_LENGTH;
-            //获取绘制位置和逻辑矩阵，预判移动后是否被阻碍
-            var drawPos = this._square1.getDrawPosition();
-            var gameField = this._gameLogic.getGameField();
+            var LEFT_BOTTOM = this._is1P ? C.GAME_FIELD_INIT_POS_1P : C.GAME_FIELD_INIT_POS_2P,
+                SQUARE_LENGTH = C.SQUARE_LENGTH,
+                //获取绘制位置和逻辑矩阵，预判移动后是否被阻碍
+                drawPos = this._square1.getDrawPosition(),
+                gameField = this._gameLogic.getGameField(),
+                targetLogicXY;
+
             //左移的情况，右移情况类似
             if (isLeftMove) {
                 //判断游戏区边界的情况
@@ -516,9 +521,9 @@ define(function(require, exports, module) {
                 /* 计算目标判定点的逻辑坐标 */
                 //所谓目标判定点，即当前方块绘制中心水平方向平移一个方块单位的距离，
                 //再向下移动半个方块单位的距离
-                var tLogicXY = Square.getLogicXY(
+                targetLogicXY = Square.getLogicXY(
                     cc.pAdd(drawPos, cc.p(-SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
-                if (gameField[tLogicXY.y][tLogicXY.x] != null) {
+                if (targetLogicXY && gameField[targetLogicXY.y][targetLogicXY.x] != null) {
                     return true;
                 }
             } else {
@@ -526,9 +531,9 @@ define(function(require, exports, module) {
                     LEFT_BOTTOM.x + SQUARE_LENGTH * C.MAX_LOGIC_W) {
                     return true;
                 }
-                var tLogicXY = Square.getLogicXY(
+                targetLogicXY = Square.getLogicXY(
                     cc.pAdd(drawPos, cc.p(SQUARE_LENGTH, -SQUARE_LENGTH / 2)), this._is1P);
-                if (gameField[tLogicXY.y][tLogicXY.x] != null) {
+                if (targetLogicXY && gameField[targetLogicXY.y][targetLogicXY.x] != null) {
                     return true;
                 }
             }
@@ -542,7 +547,7 @@ define(function(require, exports, module) {
         exchangeSquare: function() {
             if (!this._gameLogic.isPause()) {
                 //方块交换东环锁变量， 用于防止在动画执行过程中响应键盘输入
-                if (!this._isExchanging && !this._isTranslating) {
+                if (!this._isExchanging && !this._isTranslating && !this._isKeyPressedDown) {
                     this._isExchanging = true;
                     //方块1执行上移动画，方块2执行下移动画，即两者交换位置
                     var SQUARE_LENGTH = C.SQUARE_LENGTH;

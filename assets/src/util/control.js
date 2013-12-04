@@ -23,13 +23,13 @@ define(function (require, exports, module) {
 
         dispatchKeyboardEvent: function (event, key) {
             var ks = this._keyboardSetting;
-            var cb = this._logic.getCurrentBlock();
+            var block = this._logic.getCurrentBlock();
             switch (event) {
                 case "onKeyUp":
                     if (this._currentPressedKey[key]) {
                         switch (key) {
                             case ks.DOWN:
-                                cb.setKeyPressedDown(false);
+                                block.setKeyPressedDown(false);
                                 break;
                         }
                     }
@@ -37,18 +37,18 @@ define(function (require, exports, module) {
                     break;
                 case "onKeyDown":
                     if (key === ks.DOWN) {
-                        cb.setKeyPressedDown(true);
+                        block.setKeyPressedDown(true);
                     }
                     if (!this._currentPressedKey[key]) {
                         switch (key) {
                             case ks.LEFT:
-                                cb.translate(true);
+                                block.translate(true);
                                 break;
                             case ks.RIGHT:
-                                cb.translate(false);
+                                block.translate(false);
                                 break;
                             case ks.ROTATE:
-                                cb.exchangeSquare();
+                                block.exchangeSquare();
                                 break;
                             case ks.PAUSE:
                                 this._logic.pauseGame();
