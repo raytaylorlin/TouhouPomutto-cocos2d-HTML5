@@ -510,10 +510,7 @@ define(function(require, exports, module) {
             //左移的情况，右移情况类似
             if (isLeftMove) {
                 //判断游戏区边界的情况
-                console.debug(drawPos.x);
                 if (drawPos.x - SQUARE_LENGTH < LEFT_BOTTOM.x - SQUARE_LENGTH / 2) {
-                    // console.log(drawPos.x + ' ' + LEFT_BOTTOM.x);
-                    // console.debug('左边界');
                     return true;
                 }
                 /* 计算目标判定点的逻辑坐标 */
@@ -605,6 +602,9 @@ define(function(require, exports, module) {
          */
         setKeyPressedDown: function(flag) {
             this._isKeyPressedDown = flag;
+            if(this._isTranslating || this._isExchanging) {
+                this._isKeyPressedDown = false;
+            }
         }
     });
 
