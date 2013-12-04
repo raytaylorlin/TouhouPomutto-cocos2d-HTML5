@@ -27,8 +27,9 @@ define(function(require, exports, module) {
             this._super();
             this._is1P = is1P;
             //随机产生方块种类
-            if (squareType == undefined) {
-                this._type = random.getMax(4) % 4;
+            if (squareType === undefined) {
+                // this._type = random.getMax(4) % 4;
+                this._type = random.getMax(2);
             } else {
                 this._type = squareType;
             }
@@ -48,6 +49,7 @@ define(function(require, exports, module) {
 
         getDrawPosition: function() {
             return this.getPosition();
+            // return cc.p(pos.x, pos.y);
         },
 
         getLogicXY: function() {
@@ -102,8 +104,10 @@ define(function(require, exports, module) {
         var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
             C.GAME_FIELD_INIT_POS_2P;
         var SQUARE_LENGTH = C.SQUARE_LENGTH;
-        var x = Math.floor((drawPos.x - LEFT_BOTTOM.x) / SQUARE_LENGTH);
-        var y = Math.floor((drawPos.y - LEFT_BOTTOM.y) / SQUARE_LENGTH);
+        //console.assert(parseInt(drawPos.x) === drawPos.x, drawPos.x);
+        //console.assert(parseInt(drawPos.y) === drawPos.y, drawPos.y);
+        var x = Math.floor((Math.round(drawPos.x) - LEFT_BOTTOM.x) / SQUARE_LENGTH);
+        var y = Math.floor((Math.round(drawPos.y) - LEFT_BOTTOM.y) / SQUARE_LENGTH);
         if (y < -1 || y >= C.MAX_LOGIC_H ||
             x < 0 || x >= C.MAX_LOGIC_W) {
             return null;
@@ -113,7 +117,6 @@ define(function(require, exports, module) {
                 y: y
             };
         }
-        //            return _getLogicXY(this.getPosition(), this._is1P);
     };
 
     var ScoreNumber = cc.Sprite.extend({

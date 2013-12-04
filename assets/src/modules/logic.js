@@ -86,7 +86,8 @@ define(function(require, exports, module) {
                 //游戏区起始方块
                 for (i = 0; i < C.DEFAULT_INIT_FIELD_H; i++) {
                     for (j = 0; j < C.MAX_LOGIC_W; j++) {
-                        var randomType = random.getMax(4);
+                        // var randomType = random.getMax(4);
+                        var randomType = (i * j) % 4;
                         var newSquare = new Square(cc.pAdd(
                             basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P, randomType);
                         _this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
@@ -196,17 +197,17 @@ define(function(require, exports, module) {
          */
         checkStopSquare: function(sq1, sq2, sq1TargetPos) {
             //根据方块1即将下落的位置来判断是否冲突
-            var tLogicXY = Square.getLogicXY(sq1TargetPos, this._is1P);
+            var targetLogicXY = Square.getLogicXY(sq1TargetPos, this._is1P);
             //逻辑Y坐标为-1表示已触底，另一种情况是下方已有方块
-            if ((tLogicXY != null) && (tLogicXY.y == -1 ||
-                this._gameField[tLogicXY.y][tLogicXY.x] != null)) {
+            if ((targetLogicXY != null) && (targetLogicXY.y === -1 ||
+                this._gameField[targetLogicXY.y][targetLogicXY.x] != null)) {
                 var logicXY1 = {
-                    x: tLogicXY.x,
-                    y: tLogicXY.y + 1
+                    x: targetLogicXY.x,
+                    y: targetLogicXY.y + 1
                 };
                 var logicXY2 = {
-                    x: tLogicXY.x,
-                    y: tLogicXY.y + 2
+                    x: targetLogicXY.x,
+                    y: targetLogicXY.y + 2
                 };
                 //校正两个方块的最终停放位置
                 sq1.setDrawPositionByLogicXY(logicXY1, this._is1P);
@@ -470,18 +471,24 @@ define(function(require, exports, module) {
                 //平移动画锁变量， 用于防止在动画执行过程中响应键盘输入
                 if (!this._isTranslating && !this._isKeyPressedDown && !this._isExchanging) {
                     if (!this.checkHorizontalBlock(isLeftMove)) {
-                        this._isTranslating = true;
                         //计算平移的距离
-                        var factor = isLeftMove ? -1 : 1;
-                        var d = cc.p(C.SQUARE_LENGTH * factor, 0);
+                        var factor = isLeftMove ? -1 : 1,
+                            distance = cc.p(C.SQUARE_LENGTH * factor, 0),
+                            sq1 = this._square1,
+                            sq2 = this._square2;
+
+                        this._isTranslating = true;
                         //创建一个动作序列，该序列首先执行平移动画，最后解除动画锁
-                        this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
-                            [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function() {
+                        sq1.runAction(cc.Spawn.create(cc.Sequence.create(
+                            [cc.MoveBy.create(this.TRANSLATE_DURATION, distance), cc.CallFunc.create(function() {
                                 this._isTranslating = false;
+                                //此处将坐标值四舍五入，以防出错，下同
+                                // sq1.setPositionX(Math.round(sq1.getPositionX()));
                             }, this)])));
                         this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
-                            [cc.MoveBy.create(this.TRANSLATE_DURATION, d), cc.CallFunc.create(function() {
+                            [cc.MoveBy.create(this.TRANSLATE_DURATION, distance), cc.CallFunc.create(function() {
                                 this._isTranslating = false;
+                                // sq2.setPositionX(Math.round(sq2.getPositionX()));
                             }, this)])));
                     }
                 }
@@ -503,7 +510,10 @@ define(function(require, exports, module) {
             //左移的情况，右移情况类似
             if (isLeftMove) {
                 //判断游戏区边界的情况
-                if (drawPos.x - SQUARE_LENGTH < LEFT_BOTTOM.x) {
+                console.debug(drawPos.x);
+                if (drawPos.x - SQUARE_LENGTH < LEFT_BOTTOM.x - SQUARE_LENGTH / 2) {
+                    // console.log(drawPos.x + ' ' + LEFT_BOTTOM.x);
+                    // console.debug('左边界');
                     return true;
                 }
                 /* 计算目标判定点的逻辑坐标 */
