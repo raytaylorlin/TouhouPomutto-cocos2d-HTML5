@@ -1,7 +1,8 @@
 define(function(require, exports, module) {
     var C = require('util/constant'),
         random = require('util/random'),
-        share = require('util/share');
+        share = require('util/share'),
+        test = require('modules/test');
 
     var Square = cc.Sprite.extend({
         FADE_OUT_DURATION: 0.5,
@@ -28,9 +29,8 @@ define(function(require, exports, module) {
             this._is1P = is1P;
             //随机产生方块种类
             if (squareType === undefined) {
-                // this._type = random.getMax(4) % 4;
+                this._type = test.getSquareType();
                 // this._type = random.getMax(2);
-                this._type = 1;
             } else {
                 this._type = squareType;
             }

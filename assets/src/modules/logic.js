@@ -86,10 +86,8 @@ define(function(require, exports, module) {
                 //游戏区起始方块
                 for (i = 0; i < C.DEFAULT_INIT_FIELD_H; i++) {
                     for (j = 0; j < C.MAX_LOGIC_W; j++) {
-                        // var randomType = random.getMax(4);
-                        var randomType = (i * j) % 4;
                         var newSquare = new Square(cc.pAdd(
-                            basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P, randomType);
+                            basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P);
                         _this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
                         //添加到逻辑矩阵
                         _this._gameField[i][j] = newSquare;
