@@ -29,7 +29,8 @@ define(function(require, exports, module) {
             //随机产生方块种类
             if (squareType === undefined) {
                 // this._type = random.getMax(4) % 4;
-                this._type = random.getMax(2);
+                // this._type = random.getMax(2);
+                this._type = 1;
             } else {
                 this._type = squareType;
             }
@@ -63,10 +64,14 @@ define(function(require, exports, module) {
          */
         setDrawPositionByLogicXY: function(logicXY, is1P) {
             var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
-                C.GAME_FIELD_INIT_POS_2P;
-            var SQUARE_LENGTH = C.SQUARE_LENGTH;
-            this.setPosition(cc.p(LEFT_BOTTOM.x + logicXY.x * SQUARE_LENGTH,
-                LEFT_BOTTOM.y + logicXY.y * SQUARE_LENGTH));
+                C.GAME_FIELD_INIT_POS_2P,
+                SQUARE_LENGTH = C.SQUARE_LENGTH,
+                drawPosition;
+
+            drawPosition = cc.p(LEFT_BOTTOM.x + logicXY.x * SQUARE_LENGTH,
+                LEFT_BOTTOM.y + logicXY.y * SQUARE_LENGTH);
+            console.debug(drawPosition);
+            this.setPosition(drawPosition);
         },
 
         fadeOut: function() {
@@ -102,12 +107,13 @@ define(function(require, exports, module) {
 
     Square.getLogicXY = function(drawPos, is1P) {
         var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
-            C.GAME_FIELD_INIT_POS_2P;
-        var SQUARE_LENGTH = C.SQUARE_LENGTH;
+            C.GAME_FIELD_INIT_POS_2P,
+            SQUARE_LENGTH = C.SQUARE_LENGTH,
+            HALF_SQUARE_LENGTH = SQUARE_LENGTH / 2;
         //console.assert(parseInt(drawPos.x) === drawPos.x, drawPos.x);
         //console.assert(parseInt(drawPos.y) === drawPos.y, drawPos.y);
-        var x = Math.floor((Math.round(drawPos.x) - LEFT_BOTTOM.x) / SQUARE_LENGTH);
-        var y = Math.floor((Math.round(drawPos.y) - LEFT_BOTTOM.y) / SQUARE_LENGTH);
+        var x = Math.floor((Math.round(drawPos.x) - LEFT_BOTTOM.x + HALF_SQUARE_LENGTH) / SQUARE_LENGTH);
+        var y = Math.floor((Math.round(drawPos.y) - LEFT_BOTTOM.y + HALF_SQUARE_LENGTH) / SQUARE_LENGTH);
         if (y < -1 || y >= C.MAX_LOGIC_H ||
             x < 0 || x >= C.MAX_LOGIC_W) {
             return null;

@@ -53,7 +53,7 @@ define(function(require, exports, module) {
             /**
              * 初始化NEXT区方块组队列
              */
-            var initNextBlockQueue = function() {
+            function initNextBlockQueue() {
                 var i;
                 var basePos = _this._is1P ? C.NEXT_QUEUE_INIT_POS_1P :
                     C.NEXT_QUEUE_INIT_POS_2P;
@@ -63,12 +63,12 @@ define(function(require, exports, module) {
                     var newBlock = new Block(_this._referLayer, _this, _this._is1P, pos);
                     _this._nextBlockQueue.push(newBlock);
                 }
-            };
+            }
 
             /**
              * 初始化游戏区起始方块（4*7）
              */
-            var initFieldSquares = function() {
+            function initFieldSquares() {
                 var i, j;
                 var basePos = _this._is1P ? C.GAME_FIELD_INIT_POS_1P :
                     C.GAME_FIELD_INIT_POS_2P;
@@ -95,7 +95,7 @@ define(function(require, exports, module) {
                         _this._gameField[i][j] = newSquare;
                     }
                 }
-            };
+            }
 
             //初始化当前（即将行动）的方块组
             this._currentBlock = new Block(this._referLayer, this, this._is1P);
@@ -183,7 +183,6 @@ define(function(require, exports, module) {
                     var newSquare = new Square(cc.pAdd(
                         basePos, cc.p(sqLength * j, -sqLength * (i + 1))), this._is1P, randomType);
                     this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
-
                 }
             }
         },
@@ -196,20 +195,24 @@ define(function(require, exports, module) {
          * @returns {boolean} 是否碰撞
          */
         checkStopSquare: function(sq1, sq2, sq1TargetPos) {
-            //根据方块1即将下落的位置来判断是否冲突
-            var targetLogicXY = Square.getLogicXY(sq1TargetPos, this._is1P);
+            //根据方块1即将下落的位置+半个方块位来判断是否冲突
+            var sq1TargetPosBelow = cc.p(sq1TargetPos.x, sq1TargetPos.y - C.SQUARE_LENGTH / 2),
+                targetLogicXY = Square.getLogicXY(sq1TargetPosBelow, this._is1P),
+                logicXY1,
+                logicXY2;
             //逻辑Y坐标为-1表示已触底，另一种情况是下方已有方块
-            if ((targetLogicXY != null) && (targetLogicXY.y === -1 ||
-                this._gameField[targetLogicXY.y][targetLogicXY.x] != null)) {
-                var logicXY1 = {
+            if (targetLogicXY && (targetLogicXY.y === -1 ||
+                this._gameField[targetLogicXY.y][targetLogicXY.x] !== null)) {
+                logicXY1 = {
                     x: targetLogicXY.x,
                     y: targetLogicXY.y + 1
                 };
-                var logicXY2 = {
+                logicXY2 = {
                     x: targetLogicXY.x,
                     y: targetLogicXY.y + 2
                 };
                 //校正两个方块的最终停放位置
+                console.debug(logicXY1.x + ',' + logicXY1.y);
                 sq1.setDrawPositionByLogicXY(logicXY1, this._is1P);
                 sq2.setDrawPositionByLogicXY(logicXY2, this._is1P);
                 //设置逻辑矩阵的值
@@ -241,14 +244,14 @@ define(function(require, exports, module) {
                 var logicXY = checkSquare.getLogicXY();
                 var x = logicXY.x,
                     y = logicXY.y;
-                console.log({
-                    x: x,
-                    y: y
-                });
+                // console.log({
+                //     x: x,
+                //     y: y
+                // });
 
                 //获取周围的4个方块（依次为左、右、上、下）
                 var arroundSquareList = [];
-                if(y >= 0) {
+                if (y >= 0) {
                     arroundSquareList.push(x - 1 >= 0 ? _this._gameField[y][x - 1] : null);
                     arroundSquareList.push(x + 1 < C.MAX_LOGIC_W ? _this._gameField[y][x + 1] : null);
                     arroundSquareList.push(y + 1 < C.MAX_LOGIC_H ? _this._gameField[y + 1][x] : null);
@@ -306,7 +309,7 @@ define(function(require, exports, module) {
 
                     for (j in group) {
                         var logicXY = group[j].getLogicXY();
-                        if(this._gameField[logicXY.y][logicXY.x]) {
+                        if (this._gameField[logicXY.y][logicXY.x]) {
                             this._gameField[logicXY.y][logicXY.x].fadeOut();
                             this._gameField[logicXY.y][logicXY.x] = null;
                         }
@@ -393,7 +396,7 @@ define(function(require, exports, module) {
         UP_MOVE_DURATION: 0.4,
         EXCHANGE_DURATION: 0.2,
         FADE_IN_DURATION: 0.6,
-        DOWN_V: -1,
+        DOWN_VELOCITY: 1,
 
         _is1P: true,
         //平移动画锁
@@ -452,14 +455,15 @@ define(function(require, exports, module) {
         update: function() {
             if (!this._isStop) {
                 //根据是否有按键盘下键决定移动速度
-                var delta = this._isKeyPressedDown ? this.DOWN_V * 10 : this.DOWN_V;
-                var pos1 = cc.pAdd(this._square1.getPosition(), cc.p(0, delta));
+                var HALF_SQUARE_LENGTH = C.SQUARE_LENGTH / 2,
+                    delta = this._isKeyPressedDown ? this.DOWN_VELOCITY * 10 : this.DOWN_VELOCITY,
+                    pos1 = cc.pSub(this._square1.getPosition(), cc.p(0, delta));
                 //进行碰撞检测
                 if (this._gameLogic.checkStopSquare(this._square1, this._square2, pos1)) {
                     //标记方块组已停止活动
                     this._isStop = true;
                 } else {
-                    var pos2 = cc.pAdd(this._square2.getPosition(), cc.p(0, delta));
+                    var pos2 = cc.pSub(this._square2.getPosition(), cc.p(0, delta));
                     this._square1.setPosition(pos1);
                     this._square2.setPosition(pos2);
                 }
@@ -607,7 +611,7 @@ define(function(require, exports, module) {
          */
         setKeyPressedDown: function(flag) {
             this._isKeyPressedDown = flag;
-            if(this._isTranslating || this._isExchanging) {
+            if (this._isTranslating || this._isExchanging) {
                 this._isKeyPressedDown = false;
             }
         }

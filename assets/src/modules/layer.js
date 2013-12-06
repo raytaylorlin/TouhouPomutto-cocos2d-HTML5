@@ -5,26 +5,26 @@
 define(function(require, exports, module) {
     var R = require('util/resource').R,
         C = require('util/constant'),
-        InputTranslater = require('util/control').InputTranslater,
         monitor = require('util/monitor'),
+        random = require('util/random'),
+        InputTranslater = require('util/control').InputTranslater,
+
         GameLogic = require('modules/logic').GameLogic,
         GameScore = require('modules/logic').GameScore;
 
-    // var director = cc.Director.getInstance();
-    // windowSize = director.getWinSize(),
-    // windowCenterPoint = cc.p(windowSize.width / 2, windowSize.height / 2);
+
+    var TEXT_POSITION = [cc.p(-300, 534), cc.p(330, 432), cc.p(626, 424), cc.p(380, 350)],
+        TEXT_TRIGGLE = [0.5, 1.0, 1.3, 1.6],
+        TEXT_DURATION = [0.8, 0.8, 0.8, 0.8],
+        OPTION_POSITION = [cc.p(841, 521), cc.p(721, 308), cc.p(500, 177)],
+        OPTION_NAME = ["practice", "battle", "network"],
+        OPTION_TRIGGLE = [1.8, 2.1, 2.4],
+        OPTION_DURATION = [1.0, 1.0, 1.0];
 
     /**
      * 游戏开始场景层
      */
     var StartSceneLayer = cc.Layer.extend({
-        TEXT_POSITION: [cc.p(-300, 534), cc.p(330, 432), cc.p(626, 424), cc.p(380, 350)],
-        TEXT_TRIGGLE: [0.5, 1.0, 1.3, 1.6],
-        TEXT_DURATION: [0.8, 0.8, 0.8, 0.8],
-        OPTION_POSITION: [cc.p(841, 521), cc.p(721, 308), cc.p(500, 177)],
-        OPTION_NAME: ["practice", "battle", "network"],
-        OPTION_TRIGGLE: [1.8, 2.1, 2.4],
-        OPTION_DURATION: [1.0, 1.0, 1.0],
 
         //点击选项事件触发时所执行的函数
         OPTION_FUNC: [
@@ -134,10 +134,10 @@ define(function(require, exports, module) {
             for (i = 0; i < 3; i++) {
                 //设置坐标和显示图像
                 var name = OPTION_NAME[i] + "_1.png";
-                var tempOptionSprite = new cc.CanTouchSprite();
+                var tempOptionSprite = cc.MenuItemImage.create();
                 this.sptOption.push(tempOptionSprite);
                 this.sptOption[i].index = i;
-                this.sptOption[i].setDisplayFrame(sfCache.getSpriteFrame(name));
+                this.sptOption[i].setNormalSpriteFrame(sfCache.getSpriteFrame(name));
                 this.sptOption[i].setPosition(OPTION_POSITION[i]);
                 this.sptOption[i].setAnchorPoint(cc.p(0.5, 0.5));
 
@@ -150,8 +150,8 @@ define(function(require, exports, module) {
                 actionSeq.push(cc.EaseSineOut.create(baseAction));
                 //index为0和1时是PRACTICE和BATTLE，需要添加旋转动画，NETWORK则不用
                 if (i == 0 || i == 1) {
-                    baseAction = cc.RotateBy.create(__tp.util.random.getRange(10, 12), -360);
-                    actionSeq.push(cc.Repeat.create(baseAction, 10000));
+                    // baseAction = cc.RotateBy.create(random.getRange(10, 12), -360);
+                    // actionSeq.push(cc.Repeat.create(baseAction, 10000));
                 }
                 this.sptOption[i].runAction(cc.Sequence.create(actionSeq));
 
@@ -159,12 +159,13 @@ define(function(require, exports, module) {
             }
 
             //点击PRACTICE事件
-            this.sptOption[0].onTouchesEnded = function(touches, event) {
-                if (this._touchBegan) {
-                    this._touchBegan = false;
-                    _this.OPTION_FUNC[0]();
-                }
-            }
+            this.sptOption[0].setCallback(function() {
+                console.log('practice');
+                // if (this._touchBegan) {
+                    // this._touchBegan = false;
+                    // _this.OPTION_FUNC[0]();
+                // }
+            }, this);
             //点击BATTLE事件
             this.sptOption[1].onTouchesEnded = function(touches, event) {
                 if (this._touchBegan) {
@@ -284,7 +285,7 @@ define(function(require, exports, module) {
 
         onKeyDown: function(key) {
             this._inputTranslater.dispatchKeyboardEvent("onKeyDown", key);
-            console.log(key);
+            // console.log(key);
         },
 
         onTouchesBegan: function(touches, event) {
@@ -306,6 +307,7 @@ define(function(require, exports, module) {
     });
 
     module.exports = {
+        StartSceneLayer: StartSceneLayer,
         LazyLayer: LazyLayer,
         SpritesLayer: SpritesLayer
     };

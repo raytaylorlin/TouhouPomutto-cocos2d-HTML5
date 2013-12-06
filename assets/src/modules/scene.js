@@ -3,7 +3,7 @@
  * @author Ray Taylor Lin <raytaylorlin@gmail.com>
  **/
 define(function (require, exports, module) {
-    var StartSceneLayer = require('modules/').StartSceneLayer,
+    var StartSceneLayer = require('modules/layer').StartSceneLayer,
         LazyLayer = require('modules/layer').LazyLayer,
         SpritesLayer = require('modules/layer').SpritesLayer;
 
