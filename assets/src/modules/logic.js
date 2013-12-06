@@ -210,9 +210,8 @@ define(function(require, exports, module) {
                     y: targetLogicXY.y + 2
                 };
                 //校正两个方块的最终停放位置
-                console.debug(logicXY1.x + ',' + logicXY1.y);
-                sq1.setDrawPositionByLogicXY(logicXY1, this._is1P);
-                sq2.setDrawPositionByLogicXY(logicXY2, this._is1P);
+                sq1.resetDrawPositionByLogicXY(this._is1P, logicXY1);
+                sq2.resetDrawPositionByLogicXY(this._is1P, logicXY2);
                 //设置逻辑矩阵的值
                 this._gameField[logicXY1.y][logicXY1.x] = sq1;
                 this._gameField[logicXY2.y][logicXY2.x] = sq2;
@@ -548,7 +547,7 @@ define(function(require, exports, module) {
          */
         exchangeSquare: function() {
             if (!this._gameLogic.isPause()) {
-                //方块交换东环锁变量， 用于防止在动画执行过程中响应键盘输入
+                //方块交换动画锁变量，用于防止在动画执行过程中响应键盘输入
                 if (!this._isExchanging && !this._isTranslating && !this._isKeyPressedDown) {
                     this._isExchanging = true;
                     //方块1执行上移动画，方块2执行下移动画，即两者交换位置

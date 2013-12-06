@@ -58,14 +58,15 @@ define(function(require, exports, module) {
         },
 
         /**
-         * 根据逻辑坐标来设置方块的绘制位置
-         * @param logicXY 逻辑坐标
+         * 根据逻辑坐标来重置方块的绘制位置
          * @param is1P 是否是1P
+         * @param [logicXY] 逻辑坐标（若为空则以当前的绘制位置来决定逻辑坐标）
          */
-        setDrawPositionByLogicXY: function(logicXY, is1P) {
+        resetDrawPositionByLogicXY: function(is1P, logicXY) {
             var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
                 C.GAME_FIELD_INIT_POS_2P,
                 SQUARE_LENGTH = C.SQUARE_LENGTH,
+                logicXY = logicXY || this.getLogicXY(),
                 drawPosition;
 
             drawPosition = cc.p(LEFT_BOTTOM.x + logicXY.x * SQUARE_LENGTH,
