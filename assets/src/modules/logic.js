@@ -463,7 +463,6 @@ define(function(require, exports, module) {
                 //进行碰撞检测
                 if (this._gameLogic.checkStopSquare(this._square1, this._square2, pos1)) {
                     //标记方块组已停止活动
-                    console.debug('stop!');
                     this._isStop = true;
                 } else {
                     var pos2 = cc.pSub(this._square2.getPosition(), cc.p(0, delta));
@@ -535,7 +534,7 @@ define(function(require, exports, module) {
                 }
             } else {
                 if (drawPos.x + SQUARE_LENGTH >
-                    LEFT_BOTTOM.x + SQUARE_LENGTH * C.MAX_LOGIC_W) {
+                    LEFT_BOTTOM.x + SQUARE_LENGTH * (C.MAX_LOGIC_W - 1) + SQUARE_LENGTH / 2) {
                     return true;
                 }
                 targetLogicXY = Square.getLogicXY(
