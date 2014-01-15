@@ -117,7 +117,7 @@ define(function(require, exports, module) {
                         //更新当前方块组（下落及碰撞检测）
                         this._currentBlock.update();
                         break;
-                        //等待动画执行状态（->STATE_BLOCK_MOVE）
+                    //等待动画执行状态（->STATE_BLOCK_MOVE）
                     case this.STATE_WAITING_ANIMATION:
                         //方块开始下落动画的时候，共享数据区会保存其一个引用
                         //动画结束的时候会移除引用，当数据区为空时，说明所有方块都停止动画，可以执行下一轮监测
@@ -125,7 +125,7 @@ define(function(require, exports, module) {
                             this._checkClearSquare();
                         }
                         break;
-                        //更新方块组状态（->STATE_BLOCK_MOVE）
+                    //更新方块组状态（->STATE_BLOCK_MOVE）
                     case this.STATE_UPDATE_BLOCK:
                         //更新NEXT区方块组队列，并更换方块组
                         this.updateNextBlockQueue();
@@ -389,9 +389,9 @@ define(function(require, exports, module) {
     });
 
     var Block = cc.Class.extend({
-        TRANSLATE_DURATION: 0.15,
+        TRANSLATE_DURATION: 0.1,
         UP_MOVE_DURATION: 0.4,
-        EXCHANGE_DURATION: 0.2,
+        EXCHANGE_DURATION: 0.1,
         FADE_IN_DURATION: 0.6,
         DOWN_VELOCITY: 1,
 
@@ -436,6 +436,11 @@ define(function(require, exports, module) {
             }
             layer.addChild(this._square1);
             layer.addChild(this._square2);
+
+            this._noname = cc.Timer.timerWithTarget(this, function(_this) {
+                _this.translateLock = false;
+                console.log('timer tick');
+            }, this.TRANSLATE_DURATION + 0.2);
         },
 
         _getStartActionSequence: function() {
@@ -450,7 +455,7 @@ define(function(require, exports, module) {
          * 方块组逻辑更新方法
          */
         update: function() {
-            if (!this._isStop) {
+            if (!this._isStop && !this._isTranslating) {
                 //根据是否有按键盘下键决定移动速度
                 var HALF_SQUARE_LENGTH = C.SQUARE_LENGTH / 2,
                     delta = this._isKeyPressedDown ? this.DOWN_VELOCITY * 10 : this.DOWN_VELOCITY,
@@ -458,6 +463,7 @@ define(function(require, exports, module) {
                 //进行碰撞检测
                 if (this._gameLogic.checkStopSquare(this._square1, this._square2, pos1)) {
                     //标记方块组已停止活动
+                    console.debug('stop!');
                     this._isStop = true;
                 } else {
                     var pos2 = cc.pSub(this._square2.getPosition(), cc.p(0, delta));
@@ -474,7 +480,7 @@ define(function(require, exports, module) {
         translate: function(isLeftMove) {
             if (!this._gameLogic.isPause()) {
                 //平移动画锁变量， 用于防止在动画执行过程中响应键盘输入
-                if (!this._isTranslating && !this._isKeyPressedDown && !this._isExchanging) {
+                if (!this._isStop && !this._isTranslating && !this._isKeyPressedDown && !this._isExchanging) {
                     if (!this.checkHorizontalBlock(isLeftMove)) {
                         //计算平移的距离
                         var factor = isLeftMove ? -1 : 1,
@@ -548,7 +554,7 @@ define(function(require, exports, module) {
         exchangeSquare: function() {
             if (!this._gameLogic.isPause()) {
                 //方块交换动画锁变量，用于防止在动画执行过程中响应键盘输入
-                if (!this._isExchanging && !this._isTranslating && !this._isKeyPressedDown) {
+                if (!this._isStop && !this._isExchanging && !this._isTranslating && !this._isKeyPressedDown) {
                     this._isExchanging = true;
                     //方块1执行上移动画，方块2执行下移动画，即两者交换位置
                     var SQUARE_LENGTH = C.SQUARE_LENGTH;

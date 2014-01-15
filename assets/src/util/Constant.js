@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     module.exports = {
-        //  IS_DEBUG: false
-        IS_DEBUG: true,
+        IS_DEBUG: false,
+        // IS_DEBUG: true,
 
         //        WINDOW_SIZE: windowSize,
         //        WINDOW_CENTER_POINT: windowCenterPoint,
