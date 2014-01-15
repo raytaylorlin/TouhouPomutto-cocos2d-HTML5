@@ -555,10 +555,17 @@ define(function(require, exports, module) {
                     this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
                         [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, SQUARE_LENGTH)), cc.CallFunc.create(function() {
                             this._isExchanging = false;
+                            if(this._isStop) {
+                                console.debug('exchange');
+                                this._square1.resetDrawPositionByLogicXY(this._is1P);
+                            }
                         }, this)])));
                     this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
                         [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, -SQUARE_LENGTH)), cc.CallFunc.create(function() {
                             this._isExchanging = false;
+                            if(this._isStop) {
+                                this._square2.resetDrawPositionByLogicXY(this._is1P);
+                            }
                         }, this)])));
                     //交换两个方块，始终保持方块1保存的是下方的方块
                     var temp = this._square1;
