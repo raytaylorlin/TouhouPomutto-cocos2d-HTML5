@@ -210,8 +210,8 @@ define(function(require, exports, module) {
                     y: targetLogicXY.y + 2
                 };
                 //校正两个方块的最终停放位置
-                sq1.resetDrawPositionByLogicXY(this._is1P, logicXY1);
-                sq2.resetDrawPositionByLogicXY(this._is1P, logicXY2);
+                sq1.stop(this._is1P, logicXY1);
+                sq2.stop(this._is1P, logicXY2);
                 //设置逻辑矩阵的值
                 this._gameField[logicXY1.y][logicXY1.x] = sq1;
                 this._gameField[logicXY2.y][logicXY2.x] = sq2;

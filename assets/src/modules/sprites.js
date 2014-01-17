@@ -58,11 +58,20 @@ define(function(require, exports, module) {
         },
 
         /**
+         * 停止方块的运动
+         * @param is1P 是否是1P
+         * @param [logicXY] 逻辑坐标（若为空则以当前的绘制位置来决定逻辑坐标）
+         */
+        stop: function(is1P, logicXY) {
+            this._resetDrawPositionByLogicXY(is1P, logicXY);
+        },
+
+        /**
          * 根据逻辑坐标来重置方块的绘制位置
          * @param is1P 是否是1P
          * @param [logicXY] 逻辑坐标（若为空则以当前的绘制位置来决定逻辑坐标）
          */
-        resetDrawPositionByLogicXY: function(is1P, logicXY) {
+        _resetDrawPositionByLogicXY: function(is1P, logicXY) {
             var LEFT_BOTTOM = is1P ? C.GAME_FIELD_INIT_POS_1P :
                 C.GAME_FIELD_INIT_POS_2P,
                 SQUARE_LENGTH = C.SQUARE_LENGTH,
