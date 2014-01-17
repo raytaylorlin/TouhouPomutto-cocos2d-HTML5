@@ -63,6 +63,12 @@ define(function(require, exports, module) {
          * @param [logicXY] 逻辑坐标（若为空则以当前的绘制位置来决定逻辑坐标）
          */
         stop: function(is1P, logicXY) {
+            this.runAction(cc.Sequence.create([
+                cc.Spawn.create(cc.ScaleTo.create(0.1, 1, 0.9),
+                    cc.MoveBy.create(0.1, cc.p(0, -4))),
+                cc.Spawn.create(cc.ScaleTo.create(0.1, 1, 1),
+                    cc.MoveBy.create(0.1, cc.p(0, 4)))
+            ]));
             this._resetDrawPositionByLogicXY(is1P, logicXY);
         },
 
@@ -80,7 +86,6 @@ define(function(require, exports, module) {
 
             drawPosition = cc.p(LEFT_BOTTOM.x + logicXY.x * SQUARE_LENGTH,
                 LEFT_BOTTOM.y + logicXY.y * SQUARE_LENGTH);
-            console.debug(drawPosition);
             this.setPosition(drawPosition);
         },
 
