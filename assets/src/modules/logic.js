@@ -10,6 +10,7 @@ define(function(require, exports, module) {
         STATE_BLOCK_MOVE: 0,
         STATE_WAITING_ANIMATION: 1,
         STATE_UPDATE_BLOCK: 2,
+        STATE_GAME_OVER: 3,
 
         BLOCK_UPDATE_THRESHOLD: 1,
 
@@ -75,7 +76,7 @@ define(function(require, exports, module) {
                 var sqLength = C.SQUARE_LENGTH;
 
                 //初始化游戏逻辑区域
-                for (i = 0; i < C.MAX_LOGIC_H; i++) {
+                for (i = 0; i < C.MAX_LOGIC_H + C.DELTA_LOGIC_H; i++) {
                     _this._gameField.push(new Array());
                     for (j = 0; j < C.MAX_LOGIC_W; j++) {
                         //null代表该位没有方块
@@ -129,6 +130,9 @@ define(function(require, exports, module) {
                     case this.STATE_UPDATE_BLOCK:
                         //更新NEXT区方块组队列，并更换方块组
                         this.updateNextBlockQueue();
+                        break;
+                    case this.STATE_GAME_OVER:
+                        //TODO: 游戏结束画面
                         break;
                 }
                 this._gameScore.update();
@@ -241,10 +245,6 @@ define(function(require, exports, module) {
                 var logicXY = checkSquare.getLogicXY();
                 var x = logicXY.x,
                     y = logicXY.y;
-                // console.log({
-                //     x: x,
-                //     y: y
-                // });
 
                 //获取周围的4个方块（依次为左、右、上、下）
                 var arroundSquareList = [];
@@ -322,7 +322,7 @@ define(function(require, exports, module) {
                 for (i = 0; i < C.MAX_LOGIC_W; i++) {
                     var fallY = 0;
                     //从最底部往上查找
-                    for (j = 0; j < C.MAX_LOGIC_H; j++) {
+                    for (j = 0; j < C.MAX_LOGIC_H + C.DELTA_LOGIC_H; j++) {
                         var checkSquare = this._gameField[j][i];
                         if (checkSquare != null) {
                             var logicXY = checkSquare.getLogicXY();
@@ -346,8 +346,14 @@ define(function(require, exports, module) {
                 this._waitingActionCalled = false;
                 this._logicState = this.STATE_WAITING_ANIMATION;
             } else {
-                //没有需要清除的方块，则切换新的方块组
-                this._logicState = this.STATE_UPDATE_BLOCK;
+                //判断游戏是否结束
+                if(this._gameField[C.MAX_LOGIC_H - 1][Math.floor(C.MAX_LOGIC_W / 2)]) {
+                    console.log('You lose');
+                    this._logicState = this.STATE_GAME_OVER;
+                } else {
+                    //没有需要清除的方块，则切换新的方块组
+                    this._logicState = this.STATE_UPDATE_BLOCK;
+                }
             }
         },
 

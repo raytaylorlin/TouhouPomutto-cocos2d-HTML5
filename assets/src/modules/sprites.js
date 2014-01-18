@@ -129,7 +129,7 @@ define(function(require, exports, module) {
         //console.assert(parseInt(drawPos.y) === drawPos.y, drawPos.y);
         var x = Math.floor((Math.round(drawPos.x) - LEFT_BOTTOM.x + HALF_SQUARE_LENGTH) / SQUARE_LENGTH);
         var y = Math.floor((Math.round(drawPos.y) - LEFT_BOTTOM.y + HALF_SQUARE_LENGTH) / SQUARE_LENGTH);
-        if (y < -1 || y >= C.MAX_LOGIC_H ||
+        if (y < -1 || y > C.MAX_LOGIC_H + C.DELTA_LOGIC_H ||
             x < 0 || x >= C.MAX_LOGIC_W) {
             return null;
         } else {
