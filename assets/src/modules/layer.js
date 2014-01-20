@@ -19,20 +19,12 @@ define(function(require, exports, module) {
         OPTION_POSITION = [cc.p(841, 521), cc.p(721, 308), cc.p(500, 177)],
         OPTION_NAME = ["practice", "battle", "network"],
         OPTION_TRIGGLE = [1.8, 2.1, 2.4],
-        OPTION_DURATION = [1.0, 1.0, 1.0];
-
-    /**
-     * 游戏开始场景层
-     */
-    var StartSceneLayer = cc.Layer.extend({
-
+        OPTION_DURATION = [1.0, 1.0, 1.0],
         //点击选项事件触发时所执行的函数
-        OPTION_FUNC: [
+        OPTION_FUNC = [
             //进入PRACTICE
             function() {
-                var PracticeSceneClass = __tp.getScene().PracticeScene;
-                var scene = new PracticeSceneClass();
-                cc.Director.getInstance().replaceScene(cc.TransitionFade.create(1.0, scene));
+                cc.log('practice!');
             },
             //进入BATTLE
             function() {
@@ -42,7 +34,14 @@ define(function(require, exports, module) {
             function() {
                 console.log("NETWORK");
             }
-        ],
+        ];
+
+    /**
+     * 游戏开始场景层
+     */
+    var StartSceneLayer = cc.Layer.extend({
+
+        
 
         isShowAbout: false,
         _sptBackground: null,
@@ -129,17 +128,24 @@ define(function(require, exports, module) {
          * @private
          */
         _createOptionAnimation: function(sfCache) {
-            var _this = this;
-            var i;
+            var _this = this,
+                menu = cc.Menu.create(),
+                name, tempOptionSprite, i;
+
             for (i = 0; i < 3; i++) {
                 //设置坐标和显示图像
-                var name = OPTION_NAME[i] + "_1.png";
-                var tempOptionSprite = cc.MenuItemImage.create();
+                name = OPTION_NAME[i] + "_1.png";
+                tempOptionSprite = cc.MenuItemImage.create();
+
+                tempOptionSprite.index = i;
+                tempOptionSprite.setNormalSpriteFrame(sfCache.getSpriteFrame(name));
+                tempOptionSprite.setPosition(OPTION_POSITION[i]);
+                tempOptionSprite.setCallback(OPTION_FUNC[i], this);
+
                 this.sptOption.push(tempOptionSprite);
-                this.sptOption[i].index = i;
-                this.sptOption[i].setNormalSpriteFrame(sfCache.getSpriteFrame(name));
-                this.sptOption[i].setPosition(OPTION_POSITION[i]);
-                this.sptOption[i].setAnchorPoint(cc.p(0.5, 0.5));
+
+                //把选项添加到菜单中
+                menu.addChild(this.sptOption[i]);
 
                 //设置动作序列
                 actionSeq = [cc.DelayTime.create(OPTION_TRIGGLE[i])];
@@ -154,25 +160,15 @@ define(function(require, exports, module) {
                     // actionSeq.push(cc.Repeat.create(baseAction, 10000));
                 }
                 this.sptOption[i].runAction(cc.Sequence.create(actionSeq));
-
-                this.addChild(this.sptOption[i]);
             }
+            
+            //把menu添加到layer中使其可见
+            menu.setPosition(cc.p(0, 0));
+            this.addChild(menu);
+        },
 
-            //点击PRACTICE事件
-            this.sptOption[0].setCallback(function() {
-                console.log('practice');
-                // if (this._touchBegan) {
-                    // this._touchBegan = false;
-                    // _this.OPTION_FUNC[0]();
-                // }
-            }, this);
-            //点击BATTLE事件
-            this.sptOption[1].onTouchesEnded = function(touches, event) {
-                if (this._touchBegan) {
-                    this._touchBegan = false;
-                    _this.OPTION_FUNC[1]();
-                }
-            }
+        _onPracticeClick: function() {
+            cc.log('practice');
         },
 
         onTouchesBegan: function(touches, event) {
