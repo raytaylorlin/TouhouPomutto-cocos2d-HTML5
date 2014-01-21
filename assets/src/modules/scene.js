@@ -29,6 +29,19 @@ define(function (require, exports, module) {
         }
     });
 
+    (function() {
+        var sceneMap = {
+            'StartScene': StartScene,
+            'PracticeScene': PracticeScene
+        };
+
+        window.addEventListener('CHANGE_SCENE', function(e) {
+            var nextScene = cc.TransitionFade.create(2, 
+                new sceneMap[e.detail.sceneName]());
+            cc.Director.getInstance().replaceScene(nextScene);
+        });
+    })();
+
     module.exports = {
         StartScene: StartScene,
         PracticeScene: PracticeScene

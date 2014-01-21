@@ -24,7 +24,12 @@ define(function(require, exports, module) {
         OPTION_FUNC = [
             //进入PRACTICE
             function() {
-                cc.log('practice!');
+                var event = new CustomEvent('CHANGE_SCENE', {
+                    detail: {
+                        sceneName: 'PracticeScene'
+                    }
+                });
+                window.dispatchEvent(event);
             },
             //进入BATTLE
             function() {
@@ -40,9 +45,6 @@ define(function(require, exports, module) {
      * 游戏开始场景层
      */
     var StartSceneLayer = cc.Layer.extend({
-
-        
-
         isShowAbout: false,
         _sptBackground: null,
         sptText: [],
