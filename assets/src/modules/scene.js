@@ -23,12 +23,16 @@ define(function (require, exports, module) {
             baseLayer.init();
             this.addChild(baseLayer);
 
-            var spritesLayer = new SpritesLayer(true);
-            spritesLayer.init();
-            this.addChild(spritesLayer);
+            var spritesLayer1P = new SpritesLayer(true);
+            var spritesLayer2P = new SpritesLayer(false);
+            spritesLayer1P.init();
+            spritesLayer2P.init();
+            this.addChild(spritesLayer1P);
+            this.addChild(spritesLayer2P);
         }
     });
 
+    //绑定自定义事件，接收来自Layer的触发事件更换场景
     (function() {
         var sceneMap = {
             'StartScene': StartScene,

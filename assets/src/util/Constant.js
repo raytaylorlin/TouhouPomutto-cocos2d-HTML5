@@ -73,11 +73,11 @@ define(function(require, exports, module) {
             PAUSE: cc.KEY.escape
         },
         KEYBOARD_SETTING_2P: {
-            LEFT: cc.KEY.left,
-            RIGHT: cc.KEY.right,
-            DOWN: cc.KEY.down,
-            ROTATE: cc.KEY.z,
-            PAUSE: cc.KEY.escape
+            LEFT: cc.KEY.a,
+            RIGHT: cc.KEY.d,
+            DOWN: cc.KEY.s,
+            ROTATE: cc.KEY.w,
+            PAUSE: cc.KEY.space
         }
     };
 });
