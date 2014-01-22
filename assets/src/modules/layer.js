@@ -234,6 +234,8 @@ define(function(require, exports, module) {
      * @type {*}
      */
     var SpritesLayer = cc.Layer.extend({
+        //是否是1P
+        _is1P: true,
         //游戏逻辑
         _gameLogic: null,
         //游戏分数
@@ -283,7 +285,6 @@ define(function(require, exports, module) {
 
         onKeyDown: function(key) {
             this._inputTranslater.dispatchKeyboardEvent("onKeyDown", key);
-            // console.log(key);
         },
 
         onTouchesBegan: function(touches, event) {

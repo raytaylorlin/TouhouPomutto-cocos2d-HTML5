@@ -12,18 +12,27 @@ define(function (require, exports, module) {
         _currentPressedKey: {},
 
         ctor: function (logic) {
+            var key;
+
             this._logic = logic;
+            this._is1P = logic.is1P();
             this._keyboardSetting = logic.is1P() ?
                 C.KEYBOARD_SETTING_1P : C.KEYBOARD_SETTING_2P;
-            var key;
+
             for (key in this._keyboardSetting) {
                 this._currentPressedKey[key] = false;
             }
         },
 
-        dispatchKeyboardEvent: function (event, key) {
-            var ks = this._keyboardSetting;
-            var block = this._logic.getCurrentBlock();
+        dispatchKeyboardEvent: function (event, key, is1P) {
+            var ks = this._keyboardSetting,
+                block = this._logic.getCurrentBlock();
+
+            //丢弃不属于该角色的键盘事件
+            if(!this._checkKeyInSetting(key)) {
+                return;
+            }
+
             switch (event) {
                 case "onKeyUp":
                     if (this._currentPressedKey[key]) {
@@ -39,6 +48,7 @@ define(function (require, exports, module) {
                     if (key === ks.DOWN) {
                         block.setKeyPressedDown(true);
                     }
+                    cc.log(block);
                     if (!this._currentPressedKey[key]) {
                         switch (key) {
                             case ks.LEFT:
@@ -58,6 +68,18 @@ define(function (require, exports, module) {
                     this._currentPressedKey[key] = true;
                     break;
             }
+        },
+
+        _checkKeyInSetting: function(key) {
+            var flag = false, 
+                name;
+            for(name in this._keyboardSetting) {
+                if(key === this._keyboardSetting[name]) {
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
         },
 
         dispatchTouchPadEvent: function () {
