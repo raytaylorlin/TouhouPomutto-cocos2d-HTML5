@@ -48,7 +48,6 @@ define(function (require, exports, module) {
                     if (key === ks.DOWN) {
                         block.setKeyPressedDown(true);
                     }
-                    cc.log(block);
                     if (!this._currentPressedKey[key]) {
                         switch (key) {
                             case ks.LEFT:

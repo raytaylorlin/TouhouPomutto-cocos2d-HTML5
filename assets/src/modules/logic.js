@@ -49,61 +49,62 @@ define(function(require, exports, module) {
          * 游戏逻辑初始化
          */
         init: function() {
-            var _this = this;
-
-            /**
-             * 初始化NEXT区方块组队列
-             */
-            function initNextBlockQueue() {
-                var i;
-                var basePos = _this._is1P ? C.NEXT_QUEUE_INIT_POS_1P :
-                    C.NEXT_QUEUE_INIT_POS_2P;
-
-                for (i = 0; i < C.NEXT_QUEUE_MAX_NUM; i++) {
-                    var pos = cc.pSub(basePos, cc.pMult(C.NEXT_QUEUE_POS_INTEVAL, i));
-                    var newBlock = new Block(_this._referLayer, _this, _this._is1P, pos);
-                    _this._nextBlockQueue.push(newBlock);
-                }
-            }
-
-            /**
-             * 初始化游戏区起始方块（4*7）
-             */
-            function initFieldSquares() {
-                var i, j;
-                var basePos = _this._is1P ? C.GAME_FIELD_INIT_POS_1P :
-                    C.GAME_FIELD_INIT_POS_2P;
-                var sqLength = C.SQUARE_LENGTH;
-
-                //初始化游戏逻辑区域
-                for (i = 0; i < C.MAX_LOGIC_H + C.DELTA_LOGIC_H; i++) {
-                    _this._gameField.push(new Array());
-                    for (j = 0; j < C.MAX_LOGIC_W; j++) {
-                        //null代表该位没有方块
-                        _this._gameField[i].push(null);
-                    }
-                }
-
-                //游戏区起始方块
-                for (i = 0; i < C.DEFAULT_INIT_FIELD_H; i++) {
-                    for (j = 0; j < C.MAX_LOGIC_W; j++) {
-                        var newSquare = new Square(cc.pAdd(
-                            basePos, cc.p(sqLength * j, sqLength * i)), _this._is1P);
-                        _this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
-                        //添加到逻辑矩阵
-                        _this._gameField[i][j] = newSquare;
-                    }
-                }
-            }
-
             //初始化当前（即将行动）的方块组
             this._currentBlock = new Block(this._referLayer, this, this._is1P);
-            initNextBlockQueue();
-            initFieldSquares();
+            this._initNextBlockQueue();
+            this._initFieldSquares();
 
             //初始化游戏分数
             this._gameScore = new GameScore(this._referLayer, this._is1P);
             this._gameScore.init();
+        },
+
+        /**
+         * 初始化NEXT区方块组队列
+         */
+
+        _initNextBlockQueue: function() {
+            var i;
+            var basePos = this._is1P ? C.NEXT_QUEUE_INIT_POS_1P :
+                C.NEXT_QUEUE_INIT_POS_2P;
+
+            this._nextBlockQueue = [];
+            for (i = 0; i < C.NEXT_QUEUE_MAX_NUM; i++) {
+                var pos = cc.pSub(basePos, cc.pMult(C.NEXT_QUEUE_POS_INTEVAL, i));
+                var newBlock = new Block(this._referLayer, this, this._is1P, pos);
+                this._nextBlockQueue.push(newBlock);
+            }
+        },
+
+        /**
+         * 初始化游戏区起始方块（4*7）
+         */
+        _initFieldSquares: function() {
+            var basePos = this._is1P ? C.GAME_FIELD_INIT_POS_1P :
+                C.GAME_FIELD_INIT_POS_2P,
+                sqLength = C.SQUARE_LENGTH,
+                i, j;
+
+            //初始化游戏逻辑区域
+            this._gameField = [];
+            for (i = 0; i < C.MAX_LOGIC_H + C.DELTA_LOGIC_H; i++) {
+                this._gameField.push([]);
+                for (j = 0; j < C.MAX_LOGIC_W; j++) {
+                    //null代表该位没有方块
+                    this._gameField[i].push(null);
+                }
+            }
+
+            //游戏区起始方块
+            for (i = 0; i < C.DEFAULT_INIT_FIELD_H; i++) {
+                for (j = 0; j < C.MAX_LOGIC_W; j++) {
+                    var newSquare = new Square(cc.pAdd(
+                        basePos, cc.p(sqLength * j, sqLength * i)), this._is1P);
+                    this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
+                    //添加到逻辑矩阵
+                    this._gameField[i][j] = newSquare;
+                }
+            }
         },
 
         /**
@@ -118,7 +119,7 @@ define(function(require, exports, module) {
                         //更新当前方块组（下落及碰撞检测）
                         this._currentBlock.update();
                         break;
-                    //等待动画执行状态（->STATE_BLOCK_MOVE）
+                        //等待动画执行状态（->STATE_BLOCK_MOVE）
                     case this.STATE_WAITING_ANIMATION:
                         //方块开始下落动画的时候，共享数据区会保存其一个引用
                         //动画结束的时候会移除引用，当数据区为空时，说明所有方块都停止动画，可以执行下一轮监测
@@ -126,7 +127,7 @@ define(function(require, exports, module) {
                             this._checkClearSquare();
                         }
                         break;
-                    //更新方块组状态（->STATE_BLOCK_MOVE）
+                        //更新方块组状态（->STATE_BLOCK_MOVE）
                     case this.STATE_UPDATE_BLOCK:
                         //更新NEXT区方块组队列，并更换方块组
                         this.updateNextBlockQueue();
@@ -347,7 +348,7 @@ define(function(require, exports, module) {
                 this._logicState = this.STATE_WAITING_ANIMATION;
             } else {
                 //判断游戏是否结束
-                if(this._gameField[C.MAX_LOGIC_H - 1][Math.floor(C.MAX_LOGIC_W / 2)]) {
+                if (this._gameField[C.MAX_LOGIC_H - 1][Math.floor(C.MAX_LOGIC_W / 2)]) {
                     console.log('You lose');
                     this._logicState = this.STATE_GAME_OVER;
                 } else {
@@ -566,7 +567,7 @@ define(function(require, exports, module) {
                     this._square1.runAction(cc.Spawn.create(cc.Sequence.create(
                         [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, SQUARE_LENGTH)), cc.CallFunc.create(function() {
                             this._isExchanging = false;
-                            if(this._isStop) {
+                            if (this._isStop) {
                                 console.debug('exchange');
                                 this._square1.resetDrawPositionByLogicXY(this._is1P);
                             }
@@ -574,7 +575,7 @@ define(function(require, exports, module) {
                     this._square2.runAction(cc.Spawn.create(cc.Sequence.create(
                         [cc.MoveBy.create(this.EXCHANGE_DURATION, cc.p(0, -SQUARE_LENGTH)), cc.CallFunc.create(function() {
                             this._isExchanging = false;
-                            if(this._isStop) {
+                            if (this._isStop) {
                                 this._square2.resetDrawPositionByLogicXY(this._is1P);
                             }
                         }, this)])));

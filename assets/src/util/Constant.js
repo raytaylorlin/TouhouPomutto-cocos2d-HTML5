@@ -44,7 +44,7 @@ define(function(require, exports, module) {
 
         //游戏分数初始化的位置
         INIT_SCORE_POINT_1P: cc.p(522, 474),
-        INIT_SCORE_POINT_2P: cc.p(542, 352),
+        INIT_SCORE_POINT_2P: cc.p(542, 382),
 
         //分数显示递增的幅度
         SCORE_INCREASE_STEP: 100,
