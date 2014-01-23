@@ -40,11 +40,11 @@ define(function(require, exports, module) {
 
         //方块组初始化的位置
         INIT_BLOCK_POINT_1P: cc.p(236, 700),
-        INIT_BLOCK_POINT_2P: cc.p(725, 720),
+        INIT_BLOCK_POINT_2P: cc.p(725, 700),
 
         //游戏分数初始化的位置
         INIT_SCORE_POINT_1P: cc.p(522, 474),
-        INIT_SCORE_POINT_2P: cc.p(542, 382),
+        INIT_SCORE_POINT_2P: cc.p(555, 307),
 
         //分数显示递增的幅度
         SCORE_INCREASE_STEP: 100,
@@ -69,7 +69,7 @@ define(function(require, exports, module) {
             LEFT: cc.KEY.left,
             RIGHT: cc.KEY.right,
             DOWN: cc.KEY.down,
-            ROTATE: cc.KEY.z,
+            ROTATE: cc.KEY.up,
             PAUSE: cc.KEY.escape
         },
         KEYBOARD_SETTING_2P: {

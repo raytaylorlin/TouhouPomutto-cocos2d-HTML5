@@ -443,11 +443,6 @@ define(function(require, exports, module) {
             }
             layer.addChild(this._square1);
             layer.addChild(this._square2);
-
-            this._noname = cc.Timer.timerWithTarget(this, function(_this) {
-                _this.translateLock = false;
-                console.log('timer tick');
-            }, this.TRANSLATE_DURATION + 0.2);
         },
 
         _getStartActionSequence: function() {
@@ -635,7 +630,7 @@ define(function(require, exports, module) {
 
     var GameScore = cc.Class.extend({
         MAX_NUM_BIT: 6,
-        _numList: [],
+        _numList: null,
         _displayScore: 0,
         _realScore: 0,
 
@@ -652,6 +647,7 @@ define(function(require, exports, module) {
         },
 
         init: function() {
+            this._numList = [];
             //_numList[0]为分数的个位数
             for (i = 0; i < this.MAX_NUM_BIT; i++) {
                 var scoreNumber = new ScoreNumber(this._is1P, i);
@@ -669,6 +665,9 @@ define(function(require, exports, module) {
 
         addScore: function(score) {
             this._realScore += score;
+            cc.log(this._is1P);
+            cc.log(this._realScore);
+
         },
 
         getScore: function() {
