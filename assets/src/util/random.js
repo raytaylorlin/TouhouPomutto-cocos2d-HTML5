@@ -35,7 +35,7 @@ define(function(require, exports, module) {
     };
 
     var getMax = function(max) {
-        return this.getRange(0, max);
+        return getRange(0, max);
     };
 
     module.exports = {

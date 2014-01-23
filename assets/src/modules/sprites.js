@@ -29,8 +29,8 @@ define(function(require, exports, module) {
             this._is1P = is1P;
             //随机产生方块种类
             if (squareType === undefined) {
-                this._type = test.getSquareType();
-                // this._type = random.getMax(2);
+                // this._type = test.getSquareType();
+                this._type = random.getRandomSquareType(is1P);
             } else {
                 this._type = squareType;
             }
