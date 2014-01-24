@@ -28,13 +28,13 @@ define(function(require, exports, module) {
         //游戏逻辑状态
         _logicState: 0,
         //NEXT队列区方块组队列
-        _nextBlockQueue: [],
+        _nextBlockQueue: null,
         //游戏区的方块矩阵
-        _gameField: [],
+        _gameField: null,
         //待清除方块的开放列表，其中存放了需要检测清除的方块
-        _openList: [],
+        _openList: null,
         //待清除方块集合列表，里面存放着一个个列表，每个列表的方块都是待清除状态
-        _clearSquareSetList: [],
+        _clearSquareSetList: null,
 
         _blockUpdateCount: 0,
 
@@ -43,6 +43,13 @@ define(function(require, exports, module) {
             //获取调用逻辑的层的引用
             this._referLayer = referLayer;
             this._is1P = is1P;
+
+            //初始化引用的对象
+            //HACK: 此处如果直接写在上面的变量中，会被两个logic共用
+            this._gameField = [];
+            this._nextBlockQueue = [];
+            this._openList = [];
+            this._clearSquareSetList = [];
         },
 
         /**
@@ -68,7 +75,6 @@ define(function(require, exports, module) {
             var basePos = this._is1P ? C.NEXT_QUEUE_INIT_POS_1P :
                 C.NEXT_QUEUE_INIT_POS_2P;
 
-            this._nextBlockQueue = [];
             for (i = 0; i < C.NEXT_QUEUE_MAX_NUM; i++) {
                 var pos = cc.pSub(basePos, cc.pMult(C.NEXT_QUEUE_POS_INTEVAL, i));
                 var newBlock = new Block(this._referLayer, this, this._is1P, pos);
@@ -86,7 +92,6 @@ define(function(require, exports, module) {
                 i, j;
 
             //初始化游戏逻辑区域
-            this._gameField = [];
             for (i = 0; i < C.MAX_LOGIC_H + C.DELTA_LOGIC_H; i++) {
                 this._gameField.push([]);
                 for (j = 0; j < C.MAX_LOGIC_W; j++) {
@@ -278,6 +283,8 @@ define(function(require, exports, module) {
             this._clearSquareSetList = [];
             //由于存在连续消除的情况，判定消除结束（切换到下一个方块组）的条件是：开放列表为空
             while (this._openList.length > 0) {
+                console.debug(this._is1P);
+                console.debug(this._openList);
                 //取出开放列表中的一个方块
                 var checkSquare = this._openList.shift();
                 //初始化待清除方块集合
@@ -300,6 +307,9 @@ define(function(require, exports, module) {
             /* 2.清除所有需要清除的方块 */
             if (this._clearSquareSetList.length > 0) {
                 var i, j, count;
+                // console.debug(this._is1P);
+                // console.debug(this._clearSquareSetList);
+
                 //遍历每个待清除方块集合，并对所有方块清除
                 for (i in this._clearSquareSetList) {
                     var group = this._clearSquareSetList[i];
@@ -308,7 +318,7 @@ define(function(require, exports, module) {
                     for (j in group) {
                         var logicXY = group[j].getLogicXY();
                         if (this._gameField[logicXY.y][logicXY.x]) {
-                            this._gameField[logicXY.y][logicXY.x].fadeOut();
+                            this._gameField[logicXY.y][logicXY.x].clear();
                             this._gameField[logicXY.y][logicXY.x] = null;
                         }
 
@@ -665,9 +675,6 @@ define(function(require, exports, module) {
 
         addScore: function(score) {
             this._realScore += score;
-            cc.log(this._is1P);
-            cc.log(this._realScore);
-
         },
 
         getScore: function() {
