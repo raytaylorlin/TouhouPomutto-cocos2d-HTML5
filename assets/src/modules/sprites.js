@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     var Square = cc.Sprite.extend({
         FADE_OUT_DURATION: 0.2,
         FALL_DOWN_DURATION: 0.3,
+        RISE_UP_DURATION: 0.5,
         FALL_BUFFER_DURATION: 0.1,
         CLEAR_BLINK_DURATION: 0.3,
         CLEAR_BLINK_TIMES: 3,
@@ -123,6 +124,11 @@ define(function(require, exports, module) {
                 this.runAction(cc.Spawn.create(cc.Sequence.create(
                     [delayAction, moveByAction, bufferAction, delayAction, callFuncAction])));
             }
+        },
+
+        riseUp: function(lineNum) {
+            this.runAction(cc.MoveBy.create(this.RISE_UP_DURATION,
+                cc.pMult(cc.p(0, C.SQUARE_LENGTH), lineNum)));
         },
 
         /**

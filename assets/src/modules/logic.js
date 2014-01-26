@@ -177,20 +177,47 @@ define(function(require, exports, module) {
         },
 
         /**
-         *
-         * @param lineNum
+         * 生成并上升指定行数的方块
+         * @param  {Integer} lineNum 产生的方块行数
          */
         riseSquareLine: function(lineNum) {
-            var i, j;
-            var basePos = this._is1P ? C.GAME_FIELD_INIT_POS_1P :
-                C.GAME_FIELD_INIT_POS_2P;
-            var sqLength = C.SQUARE_LENGTH;
+            var basePos = this._is1P ? C.GAME_FIELD_INIT_POS_1P:
+                C.GAME_FIELD_INIT_POS_2P,
+                squareLength = C.SQUARE_LENGTH,
+                newSquareField = [],
+                squareType, newSquare, i, j;
+
+            //newSquareField存储新生成的方块
+            for (i = 0; i < lineNum; i++) {
+                newSquareField.push([]);
+                for (j = 0; j < C.MAX_LOGIC_W; j++) {
+                    randomType = random.getRandomSquareType();
+                    //一开始位于主游戏区的下方
+                    newSquare = new Square(cc.pAdd(
+                        basePos, cc.p(squareLength * j, -squareLength * (i + 1))), this._is1P, randomType);
+                    this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
+                    newSquareField[i].push(newSquare);
+                }
+            }
+
+            //从上往下扫描主游戏区每一行
+            for (i = C.MAX_LOGIC_H + C.DELTA_LOGIC_H - 1; i >= 0 ; i--) {
+                for (j = 0; j < C.MAX_LOGIC_W; j++) {
+                    if(this._gameField[i][j]) {
+                        //重新定位到上升后的位置
+                        this._gameField[i + lineNum][j] = this._gameField[i][j];
+                        //执行上升动画
+                        this._gameField[i][j].riseUp(lineNum);
+                    }
+                }
+            }
+
+            //从上往下扫描新生成方块区每一行
             for (i = 0; i < lineNum; i++) {
                 for (j = 0; j < C.MAX_LOGIC_W; j++) {
-                    var randomType = random.getMax(4);
-                    var newSquare = new Square(cc.pAdd(
-                        basePos, cc.p(sqLength * j, -sqLength * (i + 1))), this._is1P, randomType);
-                    this._referLayer.addChild(newSquare, C.SQUARE_DEPTH_LEVEL);
+                    //重新定位到上升后的位置
+                    this._gameField[lineNum - i -1][j] = newSquareField[i][j];
+                    newSquareField[i][j].riseUp(lineNum);
                 }
             }
         },
@@ -283,8 +310,6 @@ define(function(require, exports, module) {
             this._clearSquareSetList = [];
             //由于存在连续消除的情况，判定消除结束（切换到下一个方块组）的条件是：开放列表为空
             while (this._openList.length > 0) {
-                console.debug(this._is1P);
-                console.debug(this._openList);
                 //取出开放列表中的一个方块
                 var checkSquare = this._openList.shift();
                 //初始化待清除方块集合

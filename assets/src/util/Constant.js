@@ -25,7 +25,7 @@ define(function(require, exports, module) {
         //默认游戏区逻辑高度
         MAX_LOGIC_H: 12,
         //游戏区逻辑高度的允许增量值（用于容纳超出游戏区顶部的方块）
-        DELTA_LOGIC_H: 2,
+        DELTA_LOGIC_H: 12,
 
         //方块尺寸
         SQUARE_SIZE: cc.p(44, 44),
