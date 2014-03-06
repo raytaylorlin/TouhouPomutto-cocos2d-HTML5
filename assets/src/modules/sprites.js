@@ -5,8 +5,11 @@ define(function(require, exports, module) {
         test = require('modules/test');
 
     var Square = cc.Sprite.extend({
-        FADE_OUT_DURATION: 0.5,
+        FADE_OUT_DURATION: 0.2,
         FALL_DOWN_DURATION: 0.3,
+        FALL_BUFFER_DURATION: 0.1,
+        CLEAR_BLINK_DURATION: 0.3,
+        CLEAR_BLINK_TIMES: 3,
 
         _logicX: -1,
         _logicY: -1,
@@ -63,12 +66,7 @@ define(function(require, exports, module) {
          * @param [logicXY] 逻辑坐标（若为空则以当前的绘制位置来决定逻辑坐标）
          */
         stop: function(is1P, logicXY) {
-            this.runAction(cc.Sequence.create([
-                cc.Spawn.create(cc.ScaleTo.create(0.1, 1, 0.9),
-                    cc.MoveBy.create(0.1, cc.p(0, -4))),
-                cc.Spawn.create(cc.ScaleTo.create(0.1, 1, 1),
-                    cc.MoveBy.create(0.1, cc.p(0, 4)))
-            ]));
+            this.runAction(this._getBufferAction());
             this._resetDrawPositionByLogicXY(is1P, logicXY);
         },
 
@@ -89,22 +87,41 @@ define(function(require, exports, module) {
             this.setPosition(drawPosition);
         },
 
-        fadeOut: function() {
-            this.runAction(cc.FadeOut.create(this.FADE_OUT_DURATION));
+        /**
+         * 方块消除
+         */
+        clear: function() {
+            this.runAction(cc.Sequence.create([
+                cc.Blink.create(this.CLEAR_BLINK_DURATION, this.CLEAR_BLINK_TIMES),
+                cc.Spawn.create(cc.ScaleTo.create(this.FADE_OUT_DURATION, 0.2, 0.2),
+                    cc.FadeOut.create(this.FADE_OUT_DURATION))
+            ]));
         },
 
+        /**
+         * 快速下落效果（用于底下方块被消除后下落）
+         * @param  {Object} targetLogicY 下落目标位置的逻辑坐标
+         */
         fallDown: function(targetLogicY) {
-            var deltaLogicY = this.getLogicXY().y - targetLogicY;
+            var deltaLogicY = this.getLogicXY().y - targetLogicY,
+                moveByAction, bufferAction, delayAction, callFuncAction;
             if (deltaLogicY > 0) {
                 this._isFallingDown = true;
                 share.fallingSquareList.push(this);
-                var moveByAction = cc.MoveBy.create(this.FALL_DOWN_DURATION,
+
+                //快速下坠阶段
+                moveByAction = cc.MoveBy.create(this.FALL_DOWN_DURATION,
                     cc.pMult(cc.p(0, -C.SQUARE_LENGTH), deltaLogicY));
-                var callFuncAction = cc.CallFunc.create(function() {
+                //缓冲阶段
+                bufferAction = this._getBufferAction();
+                //延时阶段
+                delayAction = cc.DelayTime.create(0.1);
+                //瞬时的逻辑计算阶段 
+                callFuncAction = cc.CallFunc.create(function() {
                     share.fallingSquareList.pop();
                 }, this);
                 this.runAction(cc.Spawn.create(cc.Sequence.create(
-                    [moveByAction, callFuncAction])));
+                    [delayAction, moveByAction, bufferAction, delayAction, callFuncAction])));
             }
         },
 
@@ -117,6 +134,18 @@ define(function(require, exports, module) {
         _getSquareFrameName: function(is1P, type) {
             var player = is1P ? "1" : "2";
             return "square" + player + "-" + type + ".png";
+        },
+
+        /*
+         * 获取方块落地的缓冲动画
+         */
+        _getBufferAction: function() {
+            return cc.Sequence.create([
+                cc.Spawn.create(cc.ScaleTo.create(this.FALL_BUFFER_DURATION, 1, 0.9),
+                    cc.MoveBy.create(this.FALL_BUFFER_DURATION, cc.p(0, -4))),
+                cc.Spawn.create(cc.ScaleTo.create(this.FALL_BUFFER_DURATION, 1, 1),
+                    cc.MoveBy.create(this.FALL_BUFFER_DURATION, cc.p(0, 4)))
+            ]);
         }
     });
 
